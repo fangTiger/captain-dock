@@ -1,0 +1,306 @@
+.signature {
+  --signature-accent: #f6b44b;
+  --signature-line: rgba(246, 180, 75, 0.42);
+  align-content: start;
+  align-self: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  display: grid;
+  gap: 0;
+  min-width: 0;
+  opacity: 0.82;
+  overflow: visible;
+  padding-block: 0;
+  position: relative;
+}
+
+.ledger {
+  --signature-accent: #f59e0b;
+  --signature-line: rgba(245, 158, 11, 0.46);
+}
+
+.market {
+  --signature-accent: #67e8f9;
+  --signature-line: rgba(103, 232, 249, 0.42);
+}
+
+.probability {
+  --signature-accent: #818cf8;
+  --signature-line: rgba(129, 140, 248, 0.44);
+}
+
+.flight {
+  --signature-accent: #34d399;
+  --signature-line: rgba(52, 211, 153, 0.42);
+}
+
+.header,
+.diagram {
+  min-width: 0;
+  position: relative;
+}
+
+.header {
+  align-content: start;
+  display: grid;
+  column-gap: var(--space-sm);
+  grid-template-columns: repeat(2, minmax(0, max-content));
+  justify-content: end;
+  opacity: 0.68;
+  padding-block: 0 var(--space-xs);
+  row-gap: 0.2rem;
+}
+
+.eyebrow,
+.statusNote,
+.diagramLabels,
+.boundaryNote {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+
+.eyebrow {
+  color: var(--text-muted);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.title {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  margin: 0;
+  overflow-wrap: normal;
+  text-transform: uppercase;
+  word-break: normal;
+}
+
+.projectName {
+  color: var(--signature-accent);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  margin: 0;
+  overflow-wrap: normal;
+  text-transform: uppercase;
+  white-space: nowrap;
+  word-break: normal;
+}
+
+.statusNote {
+  color: var(--text-secondary);
+  display: inline-flex;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.boundaryNote {
+  color: var(--text-secondary);
+  grid-column: 1 / -1;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 64ch;
+  overflow-wrap: break-word;
+}
+
+.diagram {
+  align-items: stretch;
+  background: transparent;
+  border: 0;
+  display: grid;
+  min-block-size: clamp(13rem, 24vw, 20rem);
+  overflow: hidden;
+}
+
+.diagramSvg {
+  block-size: 100%;
+  inline-size: 100%;
+  min-block-size: clamp(12rem, 23vw, 19rem);
+}
+
+.gridLine,
+.heavyLine,
+.signalLine {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.gridLine {
+  stroke: color-mix(in srgb, var(--signature-accent), transparent 74%);
+  stroke-width: 1;
+}
+
+.heavyLine {
+  stroke: color-mix(in srgb, var(--signature-accent), transparent 42%);
+  stroke-width: 2;
+}
+
+.signalLine {
+  stroke: var(--signature-accent);
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  stroke-width: 3;
+}
+
+.centerAxis {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-dasharray: 5 7;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.block {
+  fill: color-mix(in srgb, var(--signature-accent), transparent 82%);
+  stroke: var(--signature-accent);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.motionTrace {
+  background: var(--signature-accent);
+  block-size: 0.46rem;
+  border-radius: 50%;
+  display: block;
+  inline-size: 0.46rem;
+  opacity: 0.5;
+  pointer-events: none;
+  position: absolute;
+}
+
+.scanTrace {
+  --trace-mid-x: clamp(4rem, 16vw, 12rem);
+  --trace-mid-y: clamp(-8rem, -10vw, -3.5rem);
+  --trace-late-x: clamp(8rem, 28vw, 22rem);
+  --trace-late-y: clamp(-8rem, -10vw, -3.5rem);
+  --trace-end-x: clamp(11rem, 44vw, 34rem);
+  --trace-end-y: clamp(-5rem, -5vw, -2rem);
+  inset-block-start: 75%;
+  inset-inline-start: 14%;
+}
+
+.matchTrace {
+  --trace-mid-x: clamp(4rem, 17vw, 12rem);
+  --trace-mid-y: clamp(-6rem, -8vw, -2.75rem);
+  --trace-late-x: clamp(7rem, 25vw, 19rem);
+  --trace-late-y: clamp(-9rem, -12vw, -4rem);
+  --trace-end-x: clamp(9rem, 34vw, 26rem);
+  --trace-end-y: clamp(-9rem, -12vw, -4rem);
+  inset-block-start: 79%;
+  inset-inline-start: 22%;
+}
+
+.arcTrace {
+  --trace-mid-x: clamp(4rem, 18vw, 13rem);
+  --trace-mid-y: clamp(-8rem, -11vw, -3.5rem);
+  --trace-late-x: clamp(7rem, 28vw, 21rem);
+  --trace-late-y: clamp(-7rem, -9vw, -3rem);
+  --trace-end-x: clamp(10rem, 38vw, 29rem);
+  --trace-end-y: clamp(-6rem, -7vw, -2.5rem);
+  inset-block-start: 75%;
+  inset-inline-start: 22%;
+}
+
+.routeTrace {
+  --trace-mid-x: clamp(5rem, 19vw, 14rem);
+  --trace-mid-y: clamp(-5rem, -6vw, -2rem);
+  --trace-late-x: clamp(9rem, 31vw, 23rem);
+  --trace-late-y: clamp(-6rem, -8vw, -2.75rem);
+  --trace-end-x: clamp(12rem, 43vw, 32rem);
+  --trace-end-y: clamp(-9rem, -11vw, -4rem);
+  inset-block-start: 74%;
+  inset-inline-start: 16%;
+}
+
+.diagramLabels {
+  align-items: end;
+  bottom: var(--space-sm);
+  color: var(--text-secondary);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  inset-inline: var(--space-sm);
+  justify-content: space-between;
+  position: absolute;
+  text-transform: uppercase;
+}
+
+.diagramLabels span {
+  background: transparent;
+  min-width: 0;
+  overflow-wrap: break-word;
+  padding: 0.2rem 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .motionTrace {
+    animation: signature-pulse 8s ease-in-out infinite;
+  }
+}
+
+@keyframes signature-pulse {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+
+  24% {
+    opacity: 0.54;
+    transform: translate3d(var(--trace-mid-x), var(--trace-mid-y), 0);
+  }
+
+  56% {
+    opacity: 0.76;
+    transform: translate3d(var(--trace-late-x), var(--trace-late-y), 0);
+  }
+
+  82% {
+    opacity: 0.48;
+    transform: translate3d(var(--trace-end-x), var(--trace-end-y), 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--trace-end-x), var(--trace-end-y), 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motionTrace {
+    animation: none;
+    opacity: 0.5;
+    transform: none;
+  }
+}
+
+@media (max-width: 819px) {
+  .signature {
+    inline-size: 100%;
+    margin-inline: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .diagram {
+    min-block-size: 11rem;
+  }
+
+  .diagramSvg {
+    min-block-size: 10rem;
+  }
+
+  .title {
+    font-size: 1.4rem;
+  }
+}

@@ -1,0 +1,114 @@
+@layer tokens, reset, base, layout, components, utilities;
+
+@layer tokens {
+  :root {
+    color-scheme: dark;
+
+    --color-graphite-950: #050608;
+    --color-graphite-900: #080b10;
+    --color-graphite-850: #0c1017;
+    --color-graphite-800: #111722;
+    --color-graphite-700: #1a2230;
+    --color-paper-100: #f1eadc;
+    --color-paper-200: #ded4c1;
+    --color-paper-300: #b9ad98;
+    --color-ink-muted: #8f9aa8;
+    --color-line-faint: rgba(241, 234, 220, 0.1);
+    --color-line: rgba(241, 234, 220, 0.22);
+    --color-focus: #d7b86a;
+
+    --color-arc: #69c9ff;
+    --color-signal: #42ddff;
+    --color-hadron: #a78bfa;
+    --color-predict: #f6b85a;
+    --color-rialo: #8ae874;
+    --color-warning: #f4a94a;
+
+    --color-deep-space-canvas: #05060a;
+    --color-deep-space-text: rgba(226, 236, 252, 0.92);
+    --color-deep-space-arc: rgb(127, 176, 255);
+    --color-deep-space-rialo: #e7a94b;
+
+    --color-arc-signal: var(--color-signal);
+    --color-arc-signal-soft: rgba(66, 221, 255, 0.18);
+    --color-rialo-radar: var(--color-rialo);
+    --color-rialo-radar-soft: rgba(138, 232, 116, 0.16);
+    --color-rialo-amber: var(--color-warning);
+    --color-rialo-amber-soft: rgba(244, 169, 74, 0.18);
+
+    --status-demo: #d7b86a;
+    --status-testnet: var(--color-arc-signal);
+    --status-experimental: var(--color-rialo-radar);
+
+    --surface-canvas: var(--color-graphite-950);
+    --surface-panel: rgba(12, 16, 23, 0.86);
+    --surface-panel-strong: rgba(17, 23, 34, 0.96);
+    --surface-paper: rgba(241, 234, 220, 0.08);
+    --text-primary: var(--color-paper-100);
+    --text-secondary: var(--color-paper-200);
+    --text-muted: var(--color-ink-muted);
+    --text-inverse: var(--color-graphite-950);
+
+    /* --font-display-local 由 next/font/local 在根布局的 body 类上注入。 */
+    --font-display: var(--font-display-local), "Chakra Petch", "Arial Narrow", sans-serif;
+    --font-body: var(--font-body-local), "Helvetica Neue", Helvetica, sans-serif;
+    --font-mono:
+      var(--font-mono-local), "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
+
+    --space-2xs: clamp(0.25rem, 0.22rem + 0.16vw, 0.375rem);
+    --space-xs: clamp(0.5rem, 0.44rem + 0.3vw, 0.75rem);
+    --space-sm: clamp(0.75rem, 0.65rem + 0.5vw, 1rem);
+    --space-md: clamp(1rem, 0.88rem + 0.63vw, 1.5rem);
+    --space-lg: clamp(1.5rem, 1.25rem + 1.25vw, 2.5rem);
+    --space-xl: clamp(2rem, 1.46rem + 2.7vw, 4.25rem);
+    --space-2xl: clamp(3rem, 2rem + 5vw, 7rem);
+
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-hard: 1px;
+
+    --line-hair: 1px;
+    --line-strong: 2px;
+
+    --z-background: 0;
+    --z-content: 1;
+    --z-header: 20;
+    --z-skip: 1000;
+
+    --content-max: 1180px;
+    --page-gutter: clamp(1rem, 4vw, 4rem);
+    --control-min: 44px;
+    --stage-aspect-ratio: auto;
+    --stage-max-width: 1440px;
+
+    --control-quiet-color: var(--text-muted);
+    --control-quiet-border: transparent;
+    --control-quiet-background: transparent;
+    --control-primary-color: var(--color-graphite-950);
+    --control-primary-border: var(--color-paper-100);
+    --control-primary-background: var(--color-paper-100);
+    --control-secondary-color: var(--text-primary);
+    --control-secondary-border: var(--color-line);
+    --control-secondary-background: transparent;
+    --control-stage-color: var(--text-secondary);
+    --control-stage-border: transparent;
+    --control-stage-background: transparent;
+
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --duration-fast: 140ms;
+    --duration-medium: 260ms;
+    --duration-slow: 520ms;
+    --duration-stage-enter: 1200ms;
+    --duration-interaction: 220ms;
+    --duration-scene-morph: 780ms;
+    --duration-route-handoff: 600ms;
+    --duration-detail-arrival: 540ms;
+    --duration-reduced-state: 180ms;
+    --duration-ambient-orbit: 8s;
+    --duration-ambient-orbit-secondary: 9s;
+    --duration-ambient-core: 8s;
+    --duration-ambient-radar: 8s;
+  }
+}

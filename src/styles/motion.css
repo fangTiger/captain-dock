@@ -1,0 +1,65 @@
+@layer utilities {
+  .reveal-field {
+    animation: reveal-field var(--duration-stage-enter) var(--ease-out) both;
+  }
+
+  .scan-line {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scan-line::after {
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--project-accent, var(--color-arc-signal)), transparent 42%), transparent);
+    content: "";
+    inset: 0;
+    opacity: 0.36;
+    pointer-events: none;
+    position: absolute;
+    transform: translateX(-115%);
+    transition: transform var(--duration-interaction) var(--ease-out);
+  }
+
+  .scan-line:hover::after,
+  .scan-line:focus-within::after {
+    transform: translateX(115%);
+  }
+
+  @keyframes reveal-field {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 12px, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-cinematic-spatial] {
+      animation: none;
+      transform: none;
+      transition-duration: var(--duration-reduced-state);
+      transition-property: opacity;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 1ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 1ms !important;
+    }
+
+    .reveal-field {
+      opacity: 1;
+      transform: none;
+    }
+
+    .scan-line::after {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,508 @@
+.homePage,
+.ecosystemPage,
+.aboutPage {
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.homePage {
+  /* 固定高而非 min-height：首页零滚动，星场区可压缩、索引条按内容 */
+  block-size: calc(100svh - 5rem);
+  gap: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+:global(#main-content).homePage,
+:global(#main-content).ecosystemPage {
+  isolation: isolate;
+  max-width: calc(var(--stage-max-width) + var(--page-gutter) + var(--page-gutter));
+  position: relative;
+}
+
+/* 首页不留底部内边距，否则文档会比视口高出这一截 */
+:global(#main-content).ecosystemPage {
+  padding-block-end: clamp(20px, 2vw, 40px);
+}
+
+:global(#main-content).homePage::before,
+:global(#main-content).ecosystemPage::before {
+  background:
+    radial-gradient(circle at 58% 14%, rgba(105, 201, 255, 0.11), transparent 29rem),
+    radial-gradient(circle at 83% 19%, rgba(138, 232, 116, 0.07), transparent 24rem);
+  content: "";
+  inset: calc(var(--space-xl) * -1) 0 auto;
+  min-block-size: min(92svh, 58rem);
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+.hero,
+.ecosystemHero,
+.aboutHero {
+  background:
+    linear-gradient(90deg, rgba(241, 234, 220, 0.07) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(241, 234, 220, 0.06) 1px, transparent 1px),
+    linear-gradient(135deg, rgba(102, 217, 255, 0.14), transparent 34%),
+    linear-gradient(180deg, var(--surface-panel-strong), rgba(5, 6, 8, 0.9));
+  background-size: 36px 36px, 36px 36px, auto, auto;
+  border: var(--line-hair) solid var(--color-line);
+  border-radius: var(--radius-sm);
+  display: grid;
+  gap: var(--space-lg);
+  overflow: hidden;
+  padding: clamp(1.25rem, 5cqw, 3.5rem);
+  position: relative;
+}
+
+.hero::before,
+.ecosystemHero::before,
+.aboutHero::before {
+  border-block-start: var(--line-hair) solid color-mix(in srgb, var(--ecosystem-accent, var(--color-arc-signal)), transparent 34%);
+  content: "";
+  inset: 1rem 1rem auto;
+  position: absolute;
+}
+
+.heroCopy,
+.ecosystemHeroCopy,
+.aboutCopy,
+.sectionHeader,
+.projectCardShell,
+.aboutNote,
+.returnNav {
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.kicker,
+.meterList dt,
+.ecosystemMeta,
+.branchLabel,
+.aboutLabel {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.lede {
+  color: var(--text-primary);
+  font-size: clamp(1.18rem, 1.06rem + 0.52rem, 1.58rem);
+  line-height: 1.45;
+  margin-block-end: 0;
+  max-width: 60ch;
+}
+
+.bodyText {
+  color: var(--text-secondary);
+  margin-block-end: 0;
+}
+
+.heroDeck {
+  align-items: stretch;
+  display: grid;
+  gap: var(--space-md);
+}
+
+.countPlate,
+.aboutNote {
+  background: rgba(241, 234, 220, 0.06);
+  border: var(--line-hair) solid var(--color-line);
+  border-radius: var(--radius-xs);
+  padding: var(--space-sm);
+}
+
+.countPlate {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.countPlate strong {
+  color: var(--text-primary);
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.08;
+}
+
+.astrolabe {
+  aspect-ratio: 1;
+  background:
+    linear-gradient(90deg, transparent 49%, rgba(241, 234, 220, 0.2) 49% 51%, transparent 51%),
+    linear-gradient(180deg, transparent 49%, rgba(241, 234, 220, 0.18) 49% 51%, transparent 51%),
+    repeating-conic-gradient(from 0deg, rgba(102, 217, 255, 0.34) 0deg 1deg, transparent 1deg 15deg),
+    radial-gradient(circle, transparent 0 28%, rgba(241, 234, 220, 0.15) 28% 29%, transparent 29% 49%, rgba(138, 232, 116, 0.16) 49% 50%, transparent 50% 67%, rgba(244, 184, 74, 0.18) 67% 68%, transparent 68%);
+  border: var(--line-hair) solid color-mix(in srgb, var(--color-arc-signal), transparent 38%);
+  border-radius: 50%;
+  inline-size: min(100%, 24rem);
+  justify-self: center;
+  min-inline-size: 14rem;
+  opacity: 0.88;
+  position: relative;
+}
+
+.astrolabe::before,
+.astrolabe::after {
+  border: var(--line-hair) solid rgba(241, 234, 220, 0.3);
+  content: "";
+  inset: 18%;
+  position: absolute;
+  transform: rotate(18deg);
+}
+
+.astrolabe::after {
+  inset: 34%;
+  transform: rotate(-24deg);
+}
+
+.astrolabeLabel {
+  align-items: center;
+  background: var(--color-graphite-950);
+  border: var(--line-hair) solid var(--color-line);
+  color: var(--color-paper-100);
+  display: inline-flex;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  inset: 50% auto auto 50%;
+  justify-content: center;
+  letter-spacing: 0;
+  min-height: var(--control-min);
+  padding: 0.35rem 0.55rem;
+  position: absolute;
+  text-transform: uppercase;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+.sectionHeader {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.ecosystemGrid,
+.projectGrid,
+.aboutGrid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.ecosystemCard {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ecosystem-accent), transparent 82%), transparent 42%),
+    linear-gradient(180deg, rgba(17, 23, 34, 0.94), rgba(5, 6, 8, 0.86));
+  border: var(--line-hair) solid color-mix(in srgb, var(--ecosystem-accent), transparent 45%);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  display: grid;
+  gap: var(--space-sm);
+  min-height: 100%;
+  padding: var(--space-md);
+  text-decoration: none;
+}
+
+.ecosystemCard:hover {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ecosystem-accent), transparent 72%), transparent 44%),
+    linear-gradient(180deg, rgba(17, 23, 34, 0.98), rgba(5, 6, 8, 0.9));
+}
+
+.ecosystemMeta,
+.branchLabel {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.ecosystemMeta span,
+.branchLabel span {
+  border: var(--line-hair) solid color-mix(in srgb, var(--ecosystem-accent), transparent 42%);
+  min-height: 32px;
+  padding: 0.22rem 0.5rem;
+}
+
+.ecosystemName {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.branchList {
+  display: grid;
+  gap: var(--space-xs);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.branchList a,
+.returnNavLink,
+.returnNav a {
+  align-items: center;
+  border: var(--line-hair) solid color-mix(in srgb, var(--ecosystem-accent, var(--color-arc-signal)), transparent 36%);
+  color: var(--text-primary);
+  display: inline-flex;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  justify-content: center;
+  letter-spacing: 0;
+  min-height: var(--control-min);
+  padding: 0.45rem 0.75rem;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.branchList a:hover,
+.returnNavLink:hover,
+.returnNav a:hover {
+  background: color-mix(in srgb, var(--ecosystem-accent, var(--color-arc-signal)), transparent 86%);
+}
+
+.projectCardShell {
+  display: grid;
+}
+
+.ecosystemHero {
+  background:
+    linear-gradient(90deg, rgba(241, 234, 220, 0.07) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(241, 234, 220, 0.06) 1px, transparent 1px),
+    linear-gradient(135deg, color-mix(in srgb, var(--ecosystem-accent), transparent 78%), transparent 42%),
+    linear-gradient(180deg, var(--ecosystem-surface), rgba(5, 6, 8, 0.9));
+  background-size: 34px 34px, 34px 34px, auto, auto;
+}
+
+.meterList {
+  display: grid;
+  gap: var(--space-xs);
+  margin: var(--space-md) 0 0;
+}
+
+.meterList div {
+  border: var(--line-hair) solid color-mix(in srgb, var(--ecosystem-accent), transparent 52%);
+  display: grid;
+  gap: 0.2rem;
+  padding: var(--space-sm);
+}
+
+.meterList dd {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 1.28rem;
+  margin: 0;
+}
+
+.ecosystemInstrument {
+  aspect-ratio: 1;
+  border: var(--line-hair) solid color-mix(in srgb, var(--ecosystem-accent), transparent 26%);
+  border-radius: 50%;
+  justify-self: center;
+  min-inline-size: 14rem;
+  position: relative;
+  width: min(100%, 22rem);
+  z-index: 1;
+}
+
+.ecosystemInstrument::before {
+  background:
+    repeating-conic-gradient(from 0deg, var(--ecosystem-accent) 0deg 1deg, transparent 1deg 18deg),
+    radial-gradient(circle, transparent 0 38%, color-mix(in srgb, var(--ecosystem-accent), transparent 70%) 38% 39%, transparent 39% 63%, rgba(241, 234, 220, 0.18) 63% 64%, transparent 64%);
+  border-radius: 50%;
+  content: "";
+  inset: 8%;
+  opacity: 0.78;
+  position: absolute;
+}
+
+.ecosystemInstrument span {
+  background: color-mix(in srgb, var(--ecosystem-accent), white 16%);
+  block-size: 2px;
+  inset-inline-start: 50%;
+  position: absolute;
+  transform-origin: 0 50%;
+}
+
+.ecosystemInstrument span:nth-child(1) {
+  inline-size: 42%;
+  inset-block-start: 50%;
+}
+
+.ecosystemInstrument span:nth-child(2) {
+  inline-size: 34%;
+  inset-block-start: 32%;
+  transform: rotate(34deg);
+}
+
+.ecosystemInstrument span:nth-child(3) {
+  inline-size: 28%;
+  inset-block-start: 66%;
+  transform: rotate(-42deg);
+}
+
+:global([data-universe-shell]) .hero,
+:global([data-universe-shell]) .ecosystemHero {
+  background:
+    linear-gradient(90deg, rgba(241, 234, 220, 0.08) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(241, 234, 220, 0.07) 1px, transparent 1px),
+    linear-gradient(135deg, color-mix(in srgb, var(--ecosystem-accent, var(--color-arc-signal)), transparent 82%), transparent 46%),
+    linear-gradient(180deg, rgba(5, 6, 8, 0.92), rgba(5, 6, 8, 0.86));
+}
+
+:global([data-universe-shell]) .heroCopy,
+:global([data-universe-shell]) .ecosystemHeroCopy {
+  background: linear-gradient(90deg, rgba(5, 6, 8, 0.78), rgba(5, 6, 8, 0.48), transparent);
+}
+
+:global([data-universe-shell]) .astrolabe,
+:global([data-universe-shell]) .ecosystemInstrument {
+  border-color: color-mix(in srgb, var(--ecosystem-accent, var(--color-arc-signal)), transparent 48%);
+  opacity: 0.42;
+}
+
+:global([data-universe-shell]) .astrolabeLabel {
+  opacity: 0.82;
+}
+
+.ecosystemProjectIndex {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.aboutGrid {
+  grid-template-columns: 1fr;
+}
+
+.aboutNote {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.aboutNote p {
+  margin: 0;
+}
+
+.returnNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+@media (min-width: 768px) {
+  .hero,
+  .ecosystemHero,
+  .aboutHero {
+    grid-template-columns: minmax(0, 1.08fr) minmax(18rem, 0.72fr);
+  }
+
+  .ecosystemGrid,
+  .projectGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .meterList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aboutGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .hero,
+  .ecosystemHero,
+  .aboutHero,
+  .ecosystemCard,
+  .countPlate,
+  .aboutNote {
+    padding: var(--space-sm);
+  }
+
+  .astrolabe,
+  .ecosystemInstrument {
+    min-inline-size: 12rem;
+  }
+
+  .returnNav,
+  .branchLabel,
+  .ecosystemMeta {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+.ecosystemIndexRail {
+  border-block: var(--line-hair) solid var(--color-line);
+  display: grid;
+  gap: 0;
+}
+
+.ecosystemIndexRail .ecosystemCard {
+  background: transparent;
+  border: 0;
+  border-block-start: var(--line-hair) solid
+    color-mix(in srgb, var(--ecosystem-accent), transparent 66%);
+  border-radius: 0;
+  grid-template-columns: minmax(8rem, 0.3fr) minmax(10rem, 0.45fr) minmax(0, 1fr);
+  min-height: 0;
+  padding-block: var(--space-md);
+}
+
+.ecosystemIndexRail .ecosystemCard:first-child {
+  border-block-start: 0;
+}
+
+.ecosystemIndexRail .ecosystemCard:hover {
+  background: color-mix(in srgb, var(--ecosystem-accent), transparent 94%);
+}
+
+.aboutHero {
+  background:
+    linear-gradient(90deg, rgba(241, 234, 220, 0.045) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(241, 234, 220, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 76% 30%, rgba(102, 217, 255, 0.12), transparent 26rem);
+  background-size: 48px 48px, 48px 48px, auto;
+  border: 0;
+  border-block: var(--line-strong) solid var(--color-line);
+  border-radius: 0;
+  min-block-size: min(56svh, 34rem);
+  padding-block: clamp(2rem, 7vw, 6rem);
+}
+
+.aboutHero::before {
+  display: none;
+}
+
+.aboutCopy h1 {
+  font-size: 7.5rem;
+  letter-spacing: -0.05em;
+}
+
+.aboutGrid {
+  gap: var(--space-lg);
+}
+
+.aboutNote {
+  background: transparent;
+  border: 0;
+  border-block-start: var(--line-hair) solid var(--color-line);
+  border-radius: 0;
+  padding: var(--space-md) 0;
+}
+
+@media (max-width: 560px) {
+  .ecosystemIndexRail .ecosystemCard {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .aboutCopy h1 {
+    font-size: 3.8rem;
+  }
+}

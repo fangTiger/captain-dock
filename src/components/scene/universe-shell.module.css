@@ -1,0 +1,62 @@
+.shell {
+  isolation: isolate;
+  min-width: 0;
+  position: relative;
+}
+
+.sceneLayer {
+  block-size: clamp(36rem, 76svh, 50rem);
+  inline-size: 100%;
+  inset: 0 0 auto;
+  overflow: clip;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 400ms var(--ease-out);
+  z-index: 0;
+}
+
+.shell[data-universe-ready="false"] .sceneLayer {
+  opacity: 0.78;
+}
+
+.shell[data-universe-ready="true"] .sceneLayer {
+  opacity: 1;
+}
+
+.contentLayer {
+  isolation: isolate;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.fallback,
+.canvasHost {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.fallback {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+.canvasHost {
+  block-size: 100%;
+  inline-size: 100%;
+  overflow: clip;
+}
+
+.canvasSurface {
+  block-size: 100%;
+  inline-size: 100%;
+  pointer-events: none;
+}
+
+@media (max-width: 759px) {
+  .sceneLayer {
+    block-size: clamp(33rem, 78svh, 40rem);
+    transform: translateY(2rem);
+  }
+}

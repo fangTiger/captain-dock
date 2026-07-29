@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Captain Dock icon">
+  <rect width="96" height="96" rx="22" fill="#050608"/>
+  <circle cx="48" cy="48" r="30" fill="none" stroke="#7dd3fc" stroke-width="3"/>
+  <circle cx="48" cy="48" r="11" fill="#fbbf24"/>
+  <path d="M24 54c12-22 36-22 48 0" fill="none" stroke="#a78bfa" stroke-linecap="round" stroke-width="4"/>
+  <circle cx="24" cy="54" r="5" fill="#38bdf8"/>
+  <circle cx="72" cy="54" r="5" fill="#22d3ee"/>
+</svg>

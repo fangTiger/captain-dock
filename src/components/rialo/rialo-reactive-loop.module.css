@@ -1,0 +1,1061 @@
+.field {
+  --stage-accent: var(--color-rialo-radar);
+  --stage-secondary: var(--color-rialo-amber);
+}
+
+.kicker,
+.routeCaption,
+.routeBody,
+.footerLabel,
+.footerCoordinate,
+.stageIndex,
+.stageSignal,
+.readoutLabel,
+.readoutSignal {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+.kicker,
+.routeCaption,
+.footerLabel,
+.footerCoordinate {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+.kicker,
+.footerCoordinate {
+  color: var(--color-rialo-radar);
+}
+
+.ecosystemTitle,
+.headline {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  margin: 0;
+}
+
+.ecosystemTitle {
+  font-size: 4.2rem;
+  line-height: 0.95;
+}
+
+.headline {
+  font-size: 2.4rem;
+  line-height: 0.98;
+  text-transform: uppercase;
+}
+
+.headline span {
+  display: block;
+  white-space: nowrap;
+}
+
+.routeBody {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  letter-spacing: 0;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 36ch;
+  text-transform: none;
+}
+
+.radar {
+  aspect-ratio: 1;
+  inline-size: min(100%, 31rem);
+  position: relative;
+}
+
+.radar::before,
+.radar::after,
+.radarRingOuter,
+.radarRingMiddle,
+.radarRingInner,
+.radarSweep {
+  border-radius: 50%;
+  inset: 8%;
+  position: absolute;
+}
+
+.radar::before {
+  background:
+    linear-gradient(90deg, transparent 49.8%, rgba(241, 234, 220, 0.18) 49.8% 50.2%, transparent 50.2%),
+    linear-gradient(180deg, transparent 49.8%, rgba(241, 234, 220, 0.16) 49.8% 50.2%, transparent 50.2%);
+  content: "";
+}
+
+.radar::after {
+  background: conic-gradient(from 25deg, color-mix(in srgb, var(--color-rialo-radar), transparent 62%), transparent 22%);
+  clip-path: polygon(50% 50%, 100% 8%, 100% 50%);
+  content: "";
+  opacity: 0.5;
+}
+
+.radarRingOuter {
+  border: var(--line-strong) solid color-mix(in srgb, var(--color-rialo-radar), transparent 52%);
+}
+
+.radarRingMiddle {
+  border: var(--line-hair) solid color-mix(in srgb, var(--color-rialo-radar), transparent 66%);
+  inset: 24%;
+}
+
+.radarRingInner {
+  border: var(--line-hair) solid color-mix(in srgb, var(--color-rialo-radar), transparent 72%);
+  inset: 39%;
+}
+
+.radarSweep {
+  border-block-start: var(--line-strong) solid var(--color-rialo-radar);
+  inset: 50% 8% auto 50%;
+  transform: rotate(-34deg);
+  transform-origin: left center;
+}
+
+.radarRoute {
+  border-block-start: 9px solid color-mix(in srgb, var(--color-rialo-amber), transparent 48%);
+  inline-size: 78%;
+  inset: 61% auto auto 7%;
+  position: absolute;
+  transform: rotate(-18deg);
+}
+
+.radarNode {
+  background: var(--color-rialo-radar);
+  border: 2px solid var(--color-graphite-950);
+  block-size: 0.7rem;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-rialo-radar), transparent 84%);
+  inline-size: 0.7rem;
+  position: absolute;
+  transition:
+    box-shadow var(--duration-interaction) var(--ease-out),
+    scale var(--duration-interaction) var(--ease-out);
+}
+
+.radarNode[data-radar-node="observe"] {
+  inset: 67% auto auto 18%;
+}
+
+.radarNode[data-radar-node="cover"] {
+  inset: 45% auto auto 32%;
+}
+
+.radarNode[data-radar-node="trigger"] {
+  inset: 31% auto auto 51%;
+}
+
+.radarNode[data-radar-node="settle"] {
+  inset: 42% auto auto 69%;
+}
+
+.radarNode[data-radar-node="explain"] {
+  inset: 66% auto auto 81%;
+}
+
+.radarNode[data-radar-node="trigger"] {
+  background: var(--color-rialo-amber);
+}
+
+.radarNode[data-active="true"] {
+  box-shadow:
+    0 0 0 7px color-mix(in srgb, var(--color-rialo-radar), transparent 72%),
+    0 0 1.5rem color-mix(in srgb, var(--color-rialo-radar), transparent 35%);
+  scale: 1.25;
+}
+
+.radarNode[data-radar-node="trigger"][data-active="true"] {
+  box-shadow:
+    0 0 0 7px color-mix(in srgb, var(--color-rialo-amber), transparent 72%),
+    0 0 1.5rem color-mix(in srgb, var(--color-rialo-amber), transparent 35%);
+}
+
+.timeline {
+  display: grid;
+  gap: 0;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stage {
+  display: grid;
+  min-width: 0;
+}
+
+.stageButton {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: grid;
+  gap: 0.45rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  inline-size: 100%;
+  min-block-size: var(--control-min);
+  padding: 0.55rem 0.65rem;
+  position: relative;
+  text-align: start;
+  transition:
+    background-color var(--duration-interaction) var(--ease-out),
+    color var(--duration-interaction) var(--ease-out);
+}
+
+.stageButton:hover,
+.stageButton:focus-visible,
+.stage[data-active="true"] .stageButton {
+  background: transparent;
+  color: var(--color-rialo-radar);
+}
+
+.stage[data-active="true"][data-rialo-step]:has([data-scene-target="rialo-step:trigger"]) .stageButton {
+  background: transparent;
+}
+
+.stageButton:focus-visible {
+  outline: 2px solid var(--color-rialo-radar);
+  outline-offset: 2px;
+}
+
+.stage[data-active='true'] .stageButton::before {
+  background: var(--color-rialo-radar);
+  block-size: 1px;
+  content: "";
+  inline-size: 2.5rem;
+  inset: 0 auto auto 0.65rem;
+  position: absolute;
+}
+
+.stage[data-active='true'][data-rialo-step]:has([data-scene-target='rialo-step:trigger']) .stageButton::before {
+  background: var(--color-rialo-amber);
+}
+
+.stageIndex {
+  color: var(--text-muted);
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+}
+
+.stageCopy {
+  display: grid;
+  min-width: 0;
+}
+
+.stageSignal {
+  color: var(--color-rialo-radar);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+}
+
+.stageTitle {
+  color: var(--text-secondary);
+  font-size: 0.66rem;
+  overflow-wrap: anywhere;
+}
+
+.stageLamp {
+  background: var(--color-rialo-radar);
+  block-size: 0.45rem;
+  inline-size: 0.45rem;
+  opacity: 0.2;
+}
+
+.stage:has([data-scene-target="rialo-step:trigger"]) .stageLamp {
+  background: var(--color-rialo-amber);
+}
+
+.stage[data-active='true'] .stageLamp {
+  opacity: 1;
+}
+
+.stageDescription {
+  color: var(--text-muted);
+  font-size: 0.62rem;
+  line-height: 1.4;
+  margin: 0;
+  padding: 0.45rem 0.65rem 0;
+}
+
+.readout {
+  background: transparent;
+  border: 0;
+  display: grid;
+  gap: var(--space-sm);
+  inline-size: 36ch;
+  max-inline-size: 36ch;
+  min-inline-size: 28ch;
+  padding: var(--space-md);
+  transition: transform var(--duration-interaction) var(--ease-out);
+}
+
+.readoutLabel,
+.readoutSignal {
+  font-size: 0.66rem;
+  letter-spacing: 0.09em;
+  margin: 0;
+}
+
+.readoutLabel {
+  color: var(--text-muted);
+}
+
+.readoutSignal {
+  color: var(--color-rialo-radar);
+}
+
+.readout h3 {
+  color: var(--text-primary);
+  font-size: 2rem;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.readoutBody {
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.projectLink {
+  inline-size: 100%;
+}
+
+@media (max-width: 1279px) and (min-width: 561px) {
+  .kicker,
+  .routeCaption,
+  .routeBody,
+  .ecosystemTitle,
+  .headline,
+  .readout,
+  .projectLink {
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .timeline {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .headline span {
+    white-space: normal;
+  }
+
+  .ecosystemTitle {
+    font-size: 2.6rem;
+  }
+
+  .headline {
+    font-size: 1.5rem;
+  }
+
+  .routeBody {
+    font-size: 0.68rem;
+  }
+
+  .radar {
+    inline-size: min(100%, 19rem);
+  }
+
+  .stageButton {
+    gap: 0.25rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: 0.4rem;
+  }
+
+  .stageLamp {
+    display: none;
+  }
+
+  .stageDescription {
+    font-size: 0.52rem;
+    padding: 0.3rem 0.4rem 0;
+  }
+
+  .readout {
+    gap: var(--space-xs);
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    padding: 0.75rem;
+  }
+
+  .readout h3 {
+    font-size: 1.4rem;
+  }
+
+  .readoutBody {
+    font-size: 0.72rem;
+  }
+}
+
+@media (max-width: 768px) and (min-width: 561px) {
+  .routeCaption,
+  .routeBody {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) and (min-width: 561px) {
+  .kicker,
+  .readoutLabel,
+  .readoutBody {
+    display: none;
+  }
+
+  .ecosystemTitle {
+    font-size: 2rem;
+  }
+
+  .headline {
+    font-size: 0.7rem;
+  }
+
+  .headline span {
+    white-space: nowrap;
+  }
+
+  .stageButton {
+    gap: 0.15rem;
+    line-height: 1.15;
+    padding: 0.3rem 0.25rem;
+  }
+
+  .stageIndex,
+  .stageSignal,
+  .stageTitle {
+    font-size: 0.55rem;
+  }
+
+  .stageDescription {
+    border: 0;
+    block-size: 1px;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    inline-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+  }
+
+  .readout {
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .readout h3 {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .projectLink {
+    font-size: 0.55rem;
+    line-height: 1.2;
+    padding: 0.35rem 0.4rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .radar {
+    inline-size: min(100%, 20rem);
+  }
+
+  .timeline {
+    gap: var(--space-xs);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stageButton {
+    padding: 0.65rem 0.75rem;
+  }
+
+  .stageDescription {
+    font-size: 0.76rem;
+    padding: 0.35rem 0.75rem 0;
+  }
+
+  .headline span {
+    white-space: normal;
+  }
+
+  .ecosystemTitle {
+    font-size: 2.8rem;
+  }
+
+  .headline {
+    font-size: 1.85rem;
+  }
+
+  .readout h3 {
+    font-size: 1.45rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 769px) {
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand']) .field[data-cinematic-entry='settled'] .corridorPlane:first-child,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand']) .field[data-cinematic-entry='settled'] .corridorPlane:first-child {
+    animation: rialo-corridor-breathe 8.8s ease-in-out infinite;
+    animation-delay: -4.4s;
+    animation-play-state: paused;
+  }
+
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand']) .field[data-cinematic-entry='settled'] .radarRoute,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand']) .field[data-cinematic-entry='settled'] .radarRoute {
+    animation: rialo-route-advance 8.8s ease-in-out infinite;
+    animation-delay: -4.4s;
+    animation-play-state: paused;
+  }
+
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .field[data-cinematic-entry='settled'] .corridorPlane:first-child,
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .field[data-cinematic-entry='settled'] .radarRoute,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .field[data-cinematic-entry='settled'] .corridorPlane:first-child,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .field[data-cinematic-entry='settled'] .radarRoute {
+    animation-play-state: running;
+  }
+
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand']) .corridorPlane,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand']) .corridorPlane {
+    transition: transform var(--duration-scene-morph) var(--ease-in-out);
+  }
+}
+
+@keyframes rialo-corridor-breathe {
+  0%,
+  100% {
+    translate: -6px 3.5px;
+  }
+
+  50% {
+    translate: 6px -3.5px;
+  }
+}
+
+@keyframes rialo-route-advance {
+  0%,
+  100% {
+    opacity: 0.64;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .corridorPlane:first-child,
+  .radarRoute {
+    animation: none !important;
+  }
+
+  .field,
+  .field *,
+  .field *::before,
+  .field *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Rialo 以斜向风险走廊为主角，雷达只保留裁切后的背景参照。 */
+.field.field {
+  aspect-ratio: auto;
+  block-size: min(56rem, calc(100svh - 5rem));
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(28ch, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  max-block-size: calc(100svh - 5rem);
+  min-block-size: min(44rem, calc(100svh - 5rem));
+  overflow: visible;
+}
+
+.field.field::before {
+  background:
+    linear-gradient(106deg, transparent 5%, rgba(241, 234, 220, 0.11) 18%, rgba(241, 234, 220, 0.11) 82%, transparent 95%) 50% 70% / 100% 1px no-repeat;
+  inset: 0;
+}
+
+.field.field::after {
+  background: radial-gradient(circle at 38% 48%, rgba(138, 232, 116, 0.07), transparent 31%);
+  inset: 0;
+}
+
+[data-rialo-reactive-loop].field.field > [data-stage-title] {
+  grid-column: 2;
+  grid-row: 1;
+  padding: clamp(1.25rem, 2.2vw, 2rem) clamp(1rem, 2vw, 1.75rem) 0;
+  z-index: 5;
+}
+
+.field > [data-stage-title] > * {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+[data-rialo-reactive-loop].field.field > [data-stage-scene] {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  inline-size: 100%;
+  justify-items: stretch;
+  min-block-size: 0;
+  padding: 0 clamp(0.75rem, 1.5vw, 1.25rem) 0 0;
+  z-index: 1;
+}
+
+[data-rialo-reactive-loop].field.field > [data-stage-readout] {
+  align-self: end;
+  grid-column: 2;
+  grid-row: 2;
+  justify-items: start;
+  padding: 1rem clamp(1rem, 2vw, 1.75rem) 1.5rem;
+  z-index: 4;
+}
+
+[data-rialo-reactive-loop].field.field > [data-stage-index] {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  padding: 0 clamp(1rem, 2vw, 1.75rem) clamp(1rem, 2vw, 1.5rem);
+  pointer-events: auto;
+  z-index: 5;
+}
+
+.field .ecosystemTitle {
+  font-size: 4.8rem;
+  white-space: nowrap;
+}
+
+.field .headline {
+  font-size: 2.8rem;
+  max-inline-size: 11ch;
+  text-transform: none;
+}
+
+.radar {
+  aspect-ratio: auto;
+  block-size: 100%;
+  inline-size: 100%;
+  margin-inline: 0;
+  max-inline-size: 100%;
+  min-block-size: 32rem;
+  overflow: visible;
+  position: relative;
+}
+
+.radar::before {
+  background: radial-gradient(circle, transparent 0 46%, rgba(138, 232, 116, 0.07) 46.3% 46.8%, transparent 47%);
+  border: 0;
+  border-radius: 50%;
+  content: "";
+  inset: -24% 34% 8% -22%;
+  opacity: 0.42;
+  position: absolute;
+}
+
+.radar::after {
+  background: linear-gradient(103deg, transparent 24%, rgba(241, 234, 220, 0.06) 24.2% 65%, transparent 65.2%);
+  clip-path: none;
+  content: "";
+  inset: 0;
+  opacity: 1;
+  position: absolute;
+}
+
+.corridorPlane {
+  background: linear-gradient(145deg, #212831, #07090d 74%);
+  block-size: 18%;
+  box-shadow:
+    0 2.8rem 5rem rgba(0, 0, 0, 0.52),
+    inset 0 1px color-mix(in srgb, var(--color-rialo-radar), transparent 44%);
+  display: block;
+  inline-size: 64%;
+  inset: 37% auto auto 14%;
+  position: absolute;
+  transform: rotate(-14deg) skewX(-16deg);
+}
+
+.corridorPlane:nth-child(2) {
+  background: linear-gradient(155deg, #131922, #050609 78%);
+  inset: 55% auto auto 28%;
+  transform: rotate(-14deg) skewX(16deg);
+}
+
+.radar[data-rialo-active-signal='observe'] .corridorPlane {
+  transform: translate3d(0, 0, 0) rotate(-14deg) skewX(-16deg) scale(1);
+}
+
+.radar[data-rialo-active-signal='observe'] .corridorPlane:nth-child(2) {
+  transform: translate3d(0, 0, 0) rotate(-14deg) skewX(16deg) scale(1);
+}
+
+.radar[data-rialo-active-signal='cover'] .corridorPlane {
+  transform: translate3d(2.75rem, -1.35rem, 0) rotate(-8deg) skewX(-13deg) scale(1.06, 0.9);
+}
+
+.radar[data-rialo-active-signal='cover'] .corridorPlane:nth-child(2) {
+  transform: translate3d(-1.75rem, 1.25rem, 0) rotate(-19deg) skewX(20deg) scale(0.94, 1.08);
+}
+
+.radar[data-rialo-active-signal='trigger'] .corridorPlane {
+  transform: translate3d(4.75rem, -2.5rem, 0) rotate(-3deg) skewX(-10deg) scale(1.12, 0.82);
+}
+
+.radar[data-rialo-active-signal='trigger'] .corridorPlane:nth-child(2) {
+  transform: translate3d(-3.5rem, 2.25rem, 0) rotate(-25deg) skewX(24deg) scale(0.88, 1.14);
+}
+
+.radar[data-rialo-active-signal='settle'] .corridorPlane {
+  transform: translate3d(1rem, 0.75rem, 0) rotate(-17deg) skewX(-17deg) scale(0.98);
+}
+
+.radar[data-rialo-active-signal='settle'] .corridorPlane:nth-child(2) {
+  transform: translate3d(-0.75rem, -0.9rem, 0) rotate(-11deg) skewX(14deg) scale(1.02);
+}
+
+.radar[data-rialo-active-signal='explain'] .corridorPlane {
+  transform: translate3d(-2.25rem, -1rem, 0) rotate(-20deg) skewX(-20deg) scale(0.94, 1.08);
+}
+
+.radar[data-rialo-active-signal='explain'] .corridorPlane:nth-child(2) {
+  transform: translate3d(2.4rem, 1.3rem, 0) rotate(-7deg) skewX(12deg) scale(1.08, 0.92);
+}
+
+.radarReference {
+  border: 1px solid rgba(138, 232, 116, 0.12);
+  border-radius: 50%;
+  block-size: 48%;
+  inline-size: 35%;
+  inset: 13% auto auto -9%;
+  position: absolute;
+}
+
+.radarRoute {
+  border-block-start: 3px solid var(--color-rialo-radar);
+  box-shadow: 0 -0.5rem 1.6rem color-mix(in srgb, var(--color-rialo-radar), transparent 84%);
+  inline-size: 76%;
+  inset: 51% auto auto 9%;
+  position: absolute;
+  transform: rotate(-14deg);
+  transform-origin: left;
+}
+
+.triggerLock {
+  border-inline: 2px solid transparent;
+  block-size: 56%;
+  inline-size: 28%;
+  inset: 24% auto auto 46%;
+  opacity: 0;
+  position: absolute;
+}
+
+.radarNode {
+  background: var(--color-rialo-radar);
+  border: 2px solid var(--color-graphite-950);
+  block-size: 0.68rem;
+  box-shadow: 0 0 0 4px rgba(138, 232, 116, 0.12);
+  inline-size: 0.68rem;
+  opacity: 0.62;
+  position: absolute;
+}
+
+.radarNode[data-radar-node='observe'] {
+  inset: 63% auto auto 16%;
+}
+
+.radarNode[data-radar-node='cover'] {
+  inset: 53% auto auto 31%;
+}
+
+.radarNode[data-radar-node='trigger'] {
+  background: var(--color-rialo-radar);
+  inset: 43% auto auto 48%;
+}
+
+.radarNode[data-radar-node='settle'] {
+  inset: 34% auto auto 65%;
+}
+
+.radarNode[data-radar-node='explain'] {
+  inset: 24% auto auto 81%;
+}
+
+.radarNode[data-active='true'] {
+  box-shadow:
+    0 0 0 7px rgba(138, 232, 116, 0.18),
+    0 0 1.4rem rgba(138, 232, 116, 0.52);
+  opacity: 1;
+  transform: scale(1.24);
+}
+
+.radar[data-rialo-active-signal='trigger'][data-rialo-event-phase='active'] .radarNode[data-radar-node='trigger'] {
+  background: var(--color-rialo-amber);
+  animation: trigger-node-jump 780ms var(--ease-out) 1 both;
+}
+
+.radar[data-rialo-active-signal='trigger'][data-rialo-event-phase='active'] .triggerLock {
+  animation: trigger-lock 780ms var(--ease-out) 1 both;
+  border-inline-color: var(--color-rialo-amber);
+}
+
+.radar[data-rialo-active-signal='trigger'][data-rialo-event-phase='active']::after {
+  animation: trigger-impact 780ms var(--ease-out) 1 both;
+  background: radial-gradient(circle at 52% 44%, rgba(244, 169, 74, 0.24), transparent 28%);
+}
+
+.timeline {
+  margin-inline-end: auto;
+  max-inline-size: 58rem;
+}
+
+.stageDescription[hidden] {
+  display: none;
+}
+
+.readout h3 {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 0.88;
+}
+
+.readoutBody {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+}
+
+.activeProjectStatement {
+  color: var(--text-secondary);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  margin: 0;
+  max-inline-size: 48ch;
+}
+
+.srOnly {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.noScriptRail {
+  display: grid;
+  gap: 0.65rem;
+  padding: var(--space-md);
+}
+
+.noScriptRail a {
+  color: var(--text-primary);
+  min-block-size: var(--control-min);
+  padding-block: 0.65rem;
+}
+
+@keyframes trigger-node-jump {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  18% {
+    transform: translate3d(1.8rem, -1.1rem, 0) scale(1.35);
+  }
+
+  64% {
+    transform: translate3d(1.8rem, -1.1rem, 0) scale(1.12);
+  }
+
+  100% {
+    transform: translate3d(1.4rem, -0.8rem, 0) scale(1);
+  }
+}
+
+@keyframes trigger-lock {
+  0%,
+  18% {
+    opacity: 0;
+    transform: scaleX(1.28);
+  }
+
+  48%,
+  82% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  100% {
+    opacity: 0.34;
+    transform: scaleX(0.96);
+  }
+}
+
+@keyframes trigger-impact {
+  0%,
+  48% {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+
+  68% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.18);
+  }
+}
+
+@media (max-width: 700px) {
+  .field.field {
+    background:
+      linear-gradient(180deg, transparent 0, rgba(138, 232, 116, 0.28) 8%, rgba(138, 232, 116, 0.1) 92%, transparent 100%) 1rem 0 / 1px 100% no-repeat,
+      radial-gradient(circle at 24% 38%, rgba(138, 232, 116, 0.09), transparent 44%);
+    block-size: auto;
+    gap: 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    max-block-size: none;
+    min-block-size: 0;
+    overflow: visible;
+  }
+
+  [data-rialo-reactive-loop].field.field > [data-stage-title] {
+    grid-column: 1;
+    grid-row: auto;
+    order: 1;
+    padding: 1rem 1rem 0 1.5rem;
+  }
+
+  [data-rialo-reactive-loop].field.field > [data-stage-scene] {
+    grid-column: 1;
+    grid-row: auto;
+    inline-size: 100%;
+    min-block-size: 0;
+    order: 2;
+    padding: 0.25rem 1rem 0 1.5rem;
+  }
+
+  [data-rialo-reactive-loop].field.field > [data-stage-readout] {
+    align-self: stretch;
+    grid-column: 1;
+    grid-row: auto;
+    inline-size: 100%;
+    order: 3;
+    padding: 1rem 1rem 1.5rem 1.5rem;
+  }
+
+  [data-rialo-reactive-loop].field.field > [data-stage-index] {
+    grid-column: 1;
+    grid-row: auto;
+    inline-size: 100%;
+    order: 4;
+    padding: 0 1rem 1rem 1.5rem;
+  }
+
+  .radar {
+    aspect-ratio: 4 / 3;
+    block-size: auto;
+    inline-size: 100%;
+    margin-inline: 0;
+    max-inline-size: 100%;
+    min-block-size: 0;
+    overflow: visible;
+  }
+
+  .radar::before {
+    inset: 0;
+  }
+
+  .radarReference {
+    inset: 13% auto auto 2%;
+  }
+
+  .field .ecosystemTitle {
+    font-size: 3rem;
+    line-height: 1.1;
+  }
+
+  .field .headline {
+    font-size: 1.4rem;
+  }
+
+  .readout h3 {
+    font-size: 2.8rem;
+  }
+
+  .timeline {
+    gap: var(--space-xs);
+    grid-template-columns: minmax(0, 1fr);
+    max-inline-size: none;
+  }
+
+  .stageButton {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    padding-inline: 0.65rem;
+  }
+
+  .stageSignal {
+    font-size: 0.62rem;
+  }
+
+  .stageDescription {
+    position: static;
+  }
+
+  .readout {
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .stage:not([data-active='true']) .stageTitle {
+    block-size: 1px;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    inline-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+  }
+
+  .stage[data-active='true'] .stageTitle {
+    block-size: auto;
+    clip: auto;
+    clip-path: none;
+    inline-size: auto;
+    margin: 0;
+    overflow: visible;
+    overflow-wrap: normal;
+    position: static;
+    white-space: normal;
+    word-break: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radar[data-rialo-active-signal='trigger'] .radarNode,
+  .radar[data-rialo-active-signal='trigger'] .triggerLock,
+  .radar[data-rialo-active-signal='trigger']::after {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,2313 @@
+.stage {
+  --stage-accent: var(--color-arc);
+  --stage-secondary: var(--color-rialo);
+  aspect-ratio: var(--stage-aspect-ratio);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.72fr) minmax(21rem, 1.28fr) minmax(9rem, 0.36fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  inline-size: auto;
+  isolation: isolate;
+  justify-self: stretch;
+  max-block-size: 720px;
+  max-inline-size: var(--stage-max-width);
+  min-block-size: 0;
+  overflow: visible;
+  position: relative;
+}
+
+.stage::before,
+.stage::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+}
+
+.stage::before {
+  background:
+    linear-gradient(90deg, transparent, color-mix(in srgb, var(--stage-accent), transparent 62%) 18%, rgba(241, 234, 220, 0.12) 48%, transparent 82%) top / 100% 1px no-repeat,
+    linear-gradient(90deg, transparent 18%, rgba(241, 234, 220, 0.1) 48%, color-mix(in srgb, var(--stage-secondary), transparent 68%) 82%, transparent) bottom / 100% 1px no-repeat;
+  inset: 1rem 0;
+  opacity: 0.44;
+}
+
+.stage::after {
+  background:
+    linear-gradient(180deg, transparent, rgba(241, 234, 220, 0.09) 22%, rgba(241, 234, 220, 0.09) 78%, transparent) center / 1px 82% no-repeat,
+    linear-gradient(90deg, transparent, rgba(241, 234, 220, 0.07) 18%, rgba(241, 234, 220, 0.07) 82%, transparent) center / 88% 1px no-repeat;
+  inset: 0;
+  opacity: 0.42;
+}
+
+.home {
+  --stage-accent: var(--color-arc);
+  --stage-secondary: var(--color-rialo);
+}
+
+.arc {
+  --stage-accent: var(--color-arc);
+  --stage-secondary: var(--color-signal);
+  grid-template-columns: minmax(16rem, 0.7fr) minmax(22rem, 1.12fr) minmax(18rem, 0.72fr);
+}
+
+.rialo {
+  --stage-accent: var(--color-rialo);
+  --stage-secondary: var(--color-warning);
+  grid-template-columns: minmax(17rem, 0.72fr) minmax(22rem, 1.15fr) minmax(18rem, 0.72fr);
+}
+
+.calibration,
+.title,
+.scene,
+.readout,
+.index,
+.footer {
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.calibration {
+  color: var(--text-muted);
+  display: flex;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  inset: 0.35rem 1.2rem auto;
+  justify-content: space-between;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  position: absolute;
+}
+
+.title {
+  align-content: start;
+  display: grid;
+  gap: var(--space-sm);
+  grid-column: 1;
+  grid-row: 1;
+  padding: clamp(2.4rem, 4vw, 4rem) clamp(1.5rem, 3vw, 2.4rem);
+}
+
+.title > * {
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.scene {
+  align-items: center;
+  display: grid;
+  grid-column: 2;
+  grid-row: 1;
+  justify-items: center;
+  min-height: 0;
+  padding: clamp(2rem, 4vw, 3.5rem) var(--space-md);
+}
+
+.readout {
+  align-content: center;
+  display: grid;
+  grid-column: 3;
+  grid-row: 1;
+  padding: clamp(2rem, 3vw, 3rem) clamp(1rem, 2vw, 2rem);
+}
+
+.index {
+  align-content: center;
+  display: grid;
+  grid-column: 3;
+  grid-row: 1;
+  padding: clamp(2rem, 3vw, 3rem) clamp(1rem, 2vw, 2rem);
+}
+
+.stage:has(.readout) .index {
+  align-content: end;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  padding: 0 clamp(1.5rem, 3vw, 2.4rem) 1.6rem;
+  pointer-events: none;
+}
+
+.stage:has(.readout) .index > * {
+  pointer-events: auto;
+}
+
+.footer {
+  align-items: center;
+  border-block-start: var(--line-hair) solid rgba(241, 234, 220, 0.16);
+  display: flex;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  justify-content: space-between;
+  min-block-size: 3rem;
+  padding: 0.6rem clamp(1.5rem, 3vw, 2.4rem);
+}
+
+.stageKicker,
+.stageCaption,
+.stageBody,
+.footerLabel,
+.activeCoordinate,
+.projectNodeLabel,
+.ecosystemStageLink small,
+.readoutCoordinate,
+.readoutList,
+.arcMachineLabel {
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.stageKicker,
+.stageCaption,
+.footerLabel,
+.activeCoordinate {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  margin: 0;
+}
+
+.stageKicker {
+  color: var(--stage-accent);
+}
+
+.stageBody {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  letter-spacing: 0;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 35ch;
+  text-transform: none;
+}
+
+.homeHeadline,
+.ecosystemTitle,
+.arcHeadline {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  line-height: 0.93;
+  margin: 0;
+}
+
+.homeHeadline {
+  font-size: 3.4rem;
+  max-width: none;
+}
+
+.homeHeadline span,
+.arcHeadline span {
+  display: block;
+  white-space: nowrap;
+}
+
+.ecosystemTitle {
+  font-size: 4.2rem;
+}
+
+.arcHeadline {
+  font-size: 2.85rem;
+  text-transform: uppercase;
+}
+
+.homeMachine,
+.arcMachine {
+  aspect-ratio: 1;
+  inline-size: min(100%, 33rem);
+  position: relative;
+}
+
+.homeMachine::before,
+.homeMachine::after,
+.homeCore,
+.arcOrbitOuter,
+.arcOrbitMiddle,
+.arcOrbitInner,
+.arcCore {
+  border-radius: 50%;
+  position: absolute;
+}
+
+.homeMachine::before,
+.homeMachine::after {
+  border: var(--line-strong) solid color-mix(in srgb, var(--color-arc), transparent 45%);
+  content: "";
+  inset: 17% 7%;
+  transform: rotate(-14deg);
+}
+
+.homeMachine::after {
+  border-color: color-mix(in srgb, var(--color-rialo), transparent 48%);
+  inset: 9% 17%;
+  transform: rotate(32deg);
+}
+
+.homeCore {
+  background: radial-gradient(circle, rgba(241, 234, 220, 0.25), rgba(5, 6, 8, 0.62) 58%);
+  border: var(--line-strong) solid rgba(241, 234, 220, 0.3);
+  box-shadow: 0 0 4rem color-mix(in srgb, var(--color-arc), transparent 76%);
+  inset: 28%;
+}
+
+.homeCore::before,
+.homeCore::after,
+.arcCore::before,
+.arcCore::after {
+  border: var(--line-hair) solid rgba(241, 234, 220, 0.28);
+  border-radius: 50%;
+  content: "";
+  inset: 14%;
+  position: absolute;
+}
+
+.homeCore::after,
+.arcCore::after {
+  border-color: var(--stage-accent);
+  inset: 32%;
+}
+
+.homeCore span,
+.arcCore span {
+  background: rgba(241, 234, 220, 0.52);
+  block-size: 1px;
+  inset: 50% -38%;
+  position: absolute;
+}
+
+.homeCore span:nth-child(2),
+.arcCore span:nth-child(2) {
+  transform: rotate(60deg);
+}
+
+.homeCore span:nth-child(3),
+.arcCore span:nth-child(3) {
+  transform: rotate(-60deg);
+}
+
+.projectOrbit {
+  inset: 0;
+  position: absolute;
+}
+
+.projectNode {
+  --node-accent: var(--stage-accent);
+  background: transparent;
+  border: 0;
+  border-inline-start: var(--line-strong) solid var(--node-accent);
+  color: var(--text-primary);
+  display: grid;
+  gap: 0.18rem;
+  inline-size: clamp(9rem, 12vw, 12rem);
+  min-block-size: var(--control-min);
+  padding: 0.65rem 0.75rem;
+  position: absolute;
+  text-decoration: none;
+  transition:
+    background-color var(--duration-interaction) var(--ease-out),
+    transform var(--duration-interaction) var(--ease-out);
+}
+
+.projectNode::before {
+  color: var(--node-accent);
+  content: attr(data-node-index);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  inset: 0.28rem 0.38rem auto auto;
+  letter-spacing: 0.08em;
+  position: absolute;
+}
+
+.projectNode:nth-child(1) {
+  inset: 7% auto auto 0;
+}
+
+.projectNode:nth-child(2) {
+  inset: 2% 0 auto auto;
+}
+
+.projectNode:nth-child(3) {
+  inset: auto 0 27% auto;
+}
+
+.projectNode:nth-child(4) {
+  inset: auto 4% 1% auto;
+}
+
+.projectNodeName {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  overflow-wrap: anywhere;
+}
+
+.projectNodeLabel {
+  color: var(--text-muted);
+  font-size: 0.53rem;
+  letter-spacing: 0.08em;
+  overflow-wrap: anywhere;
+}
+
+.projectNode:hover,
+.projectNode:focus-visible {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--node-accent), transparent 86%), transparent 82%);
+  transform: translateX(0.22rem);
+}
+
+.ecosystemStageIndex {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.ecosystemStageLink {
+  --node-accent: var(--stage-accent);
+  align-items: start;
+  color: var(--text-primary);
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  min-block-size: var(--control-min);
+  text-decoration: none;
+}
+
+.ecosystemStageLink + .ecosystemStageLink {
+  border-block-start: var(--line-hair) solid rgba(241, 234, 220, 0.16);
+  padding-block-start: var(--space-lg);
+}
+
+.ecosystemNumber {
+  color: var(--node-accent);
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.ecosystemStageLink strong,
+.ecosystemStageLink small {
+  display: block;
+}
+
+.ecosystemStageLink strong {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ecosystemStageLink small {
+  color: var(--text-muted);
+  font-size: 0.56rem;
+  margin-block-start: 0.22rem;
+}
+
+.footerArrow {
+  color: var(--stage-accent);
+  font-size: 1.2rem;
+}
+
+.arcMachine {
+  align-items: center;
+  display: grid;
+  justify-items: center;
+}
+
+.arcOrbitOuter {
+  border: var(--line-strong) solid color-mix(in srgb, var(--color-arc), transparent 55%);
+  inset: 6%;
+}
+
+.arcOrbitMiddle {
+  border: var(--line-strong) solid color-mix(in srgb, var(--node-accent, var(--color-signal)), transparent 40%);
+  inset: 17%;
+}
+
+.arcOrbitInner {
+  border: var(--line-hair) solid rgba(241, 234, 220, 0.26);
+  inset: 29%;
+}
+
+.arcCore {
+  background:
+    repeating-linear-gradient(180deg, var(--node-accent, var(--color-signal)) 0 2px, transparent 2px 14px),
+    rgba(5, 6, 8, 0.7);
+  border: var(--line-strong) solid var(--node-accent, var(--color-signal));
+  inset: 37%;
+}
+
+.arcMachineLabel {
+  bottom: 4%;
+  color: var(--text-muted);
+  font-size: 0.56rem;
+  left: 50%;
+  margin: 0;
+  position: absolute;
+  translate: -50% 0;
+  white-space: nowrap;
+}
+
+.arcReadout {
+  --node-accent: var(--color-signal);
+  background: transparent;
+  border: 0;
+  border-inline-start: var(--line-strong) solid color-mix(in srgb, var(--node-accent), transparent 22%);
+  display: grid;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  transition:
+    border-color var(--duration-interaction) var(--ease-out),
+    transform var(--duration-interaction) var(--ease-out);
+}
+
+.readoutCoordinate {
+  color: var(--node-accent);
+  font-size: 0.68rem;
+  margin: 0;
+}
+
+.arcReadout h2 {
+  font-size: 2.35rem;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.readoutClaim {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.readoutList {
+  display: grid;
+  font-size: 0.58rem;
+  gap: 0;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.readoutList div {
+  border-block-start: var(--line-hair) solid rgba(241, 234, 220, 0.16);
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  padding-block: 0.45rem;
+}
+
+.readoutList dt {
+  color: var(--node-accent);
+}
+
+.readoutList dd {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.stagePrimaryLink {
+  inline-size: 100%;
+}
+
+.arcSelectors {
+  display: grid;
+  gap: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.arcSelector {
+  align-items: start;
+  background: transparent;
+  border: 0;
+  border-block-start: var(--line-hair) solid rgba(241, 234, 220, 0.18);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: grid;
+  gap: 0.12rem;
+  min-block-size: var(--control-min);
+  padding: 0.55rem 0.75rem;
+  text-align: start;
+  transition:
+    background-color var(--duration-interaction) var(--ease-out),
+    border-color var(--duration-interaction) var(--ease-out),
+    transform var(--duration-interaction) var(--ease-out);
+}
+
+.arcSelector span,
+.arcSelector strong,
+.arcSelector small {
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.arcSelector span,
+.arcSelector small {
+  color: var(--text-muted);
+  font-size: 0.55rem;
+}
+
+.arcSelector strong {
+  color: var(--text-primary);
+  font-size: 0.7rem;
+}
+
+.arcSelector:hover,
+.arcSelector:focus-visible,
+.arcSelector[aria-pressed="true"] {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--stage-accent), transparent 88%), transparent);
+  border-block-start-color: var(--stage-accent);
+  transform: translateY(-0.16rem);
+}
+
+.activeCoordinate {
+  color: var(--stage-accent);
+}
+
+@media (min-width: 1280px) {
+  .homeHeadline {
+    font-size: 3.1rem;
+  }
+
+  .arc {
+    grid-template-columns: minmax(24rem, 0.9fr) minmax(18rem, 1fr) minmax(16rem, 0.72fr);
+  }
+
+  .arcHeadline {
+    font-size: 2.65rem;
+  }
+
+  .rialo {
+    grid-template-columns: minmax(28rem, 0.95fr) minmax(18rem, 0.95fr) minmax(16rem, 0.65fr);
+  }
+}
+
+@media (max-width: 1279px) and (min-width: 561px) {
+  .stage,
+  .arc,
+  .rialo {
+    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.12fr) minmax(0, 0.68fr);
+  }
+
+  .arc,
+  .rialo {
+    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.12fr) minmax(11.5rem, 0.68fr);
+  }
+
+  .title {
+    gap: var(--space-xs);
+    padding: 2rem 1rem;
+  }
+
+  .scene {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .readout,
+  .index {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .stage:has(.readout) .index {
+    padding: 0 1rem 1rem;
+  }
+
+  .footer {
+    padding-inline: 1rem;
+  }
+
+  .homeHeadline {
+    font-size: 1.9rem;
+    inline-size: 100%;
+    max-width: none;
+  }
+
+  .homeHeadline span,
+  .arcHeadline span {
+    white-space: normal;
+  }
+
+  .ecosystemTitle {
+    font-size: 2.6rem;
+  }
+
+  .arcHeadline {
+    font-size: 1.55rem;
+  }
+
+  .homeMachine,
+  .arcMachine {
+    inline-size: min(100%, 19rem);
+  }
+
+  .homeMachine::before {
+    inset: 20% 10%;
+  }
+
+  .homeMachine::after {
+    inset: 14%;
+  }
+
+  .projectNode {
+    inline-size: min(8rem, 44%);
+    padding: 0.5rem 0.6rem;
+  }
+
+  .projectNode:nth-child(1) {
+    inset: 0 auto auto 0;
+  }
+
+  .projectNode:nth-child(2) {
+    inset: 0 0 auto auto;
+  }
+
+  .projectNode:nth-child(3) {
+    inset: auto 0 0 auto;
+  }
+
+  .projectNode:nth-child(4) {
+    inset: auto auto 0 0;
+  }
+
+  .ecosystemStageIndex {
+    gap: var(--space-md);
+  }
+
+  .ecosystemStageLink {
+    gap: var(--space-xs);
+  }
+
+  .ecosystemStageLink + .ecosystemStageLink {
+    padding-block-start: var(--space-md);
+  }
+
+  .ecosystemNumber {
+    font-size: 1.35rem;
+  }
+
+  .arcReadout {
+    gap: var(--space-xs);
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    padding: 0.75rem;
+    overflow-wrap: anywhere;
+  }
+
+  .arcReadout h2 {
+    font-size: 1.45rem;
+  }
+
+  .readoutClaim {
+    font-size: 0.74rem;
+  }
+
+  .arcSelector {
+    padding: 0.45rem 0.55rem;
+  }
+
+  .arcMachineLabel {
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+    text-align: center;
+    white-space: normal;
+  }
+
+  .stagePrimaryLink {
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 768px) and (min-width: 561px) {
+  .arc .stageCaption,
+  .arc .stageBody {
+    display: none;
+  }
+
+  .arc .readout,
+  .rialo .readout {
+    padding-block: 1.25rem;
+  }
+
+  .arcReadout {
+    padding-block: 0.5rem;
+  }
+}
+
+@media (max-width: 640px) and (min-width: 561px) {
+  .title {
+    padding-block: 1rem;
+    padding-inline: 0.5rem;
+  }
+
+  .homeHeadline {
+    font-size: 1.25rem;
+  }
+
+  .arc .stageKicker {
+    display: none;
+  }
+
+  .arc .readout,
+  .rialo .readout {
+    align-content: start;
+    padding: 0.75rem 0.5rem 0;
+  }
+
+  .arc .ecosystemTitle,
+  .rialo .ecosystemTitle {
+    font-size: 2rem;
+  }
+
+  .arcHeadline {
+    font-size: 0.75rem;
+  }
+
+  .arcHeadline span {
+    white-space: nowrap;
+  }
+
+  .readoutClaim,
+  .readoutList {
+    display: none;
+  }
+
+  .arcMachineLabel {
+    display: none;
+  }
+
+  .arcReadout {
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .arcReadout h2 {
+    font-size: 1.05rem;
+  }
+
+  .stagePrimaryLink {
+    font-size: 0.55rem;
+    line-height: 1.2;
+    padding: 0.35rem 0.4rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .stage,
+  .arc,
+  .rialo {
+    aspect-ratio: auto;
+    display: flex;
+    flex-direction: column;
+    inline-size: 100%;
+    margin-inline: 0;
+    max-block-size: none;
+    min-block-size: 0;
+    overflow: visible;
+    translate: none;
+  }
+
+  .stage::before {
+    display: none;
+  }
+
+  .calibration {
+    display: none;
+  }
+
+  .title,
+  .scene,
+  .readout,
+  .index {
+    inline-size: 100%;
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .scene {
+    min-block-size: 18rem;
+    order: 2;
+  }
+
+  .title {
+    order: 1;
+  }
+
+  .readout {
+    order: 3;
+  }
+
+  .index {
+    order: 4;
+  }
+
+  .stage:has(.readout) .index {
+    padding: 0 var(--space-md) var(--space-lg);
+  }
+
+  .footer {
+    order: 5;
+    padding-inline: var(--space-md);
+  }
+
+  .homeHeadline span,
+  .arcHeadline span {
+    white-space: normal;
+  }
+
+  .homeHeadline {
+    font-size: 2.65rem;
+  }
+
+  .ecosystemTitle {
+    font-size: 2.8rem;
+  }
+
+  .arcHeadline {
+    font-size: 2rem;
+  }
+
+  .homeMachine,
+  .arcMachine {
+    inline-size: min(100%, 22rem);
+  }
+
+  .homeMachine::before {
+    inset: 20% 10%;
+  }
+
+  .homeMachine::after {
+    inset: 14%;
+  }
+
+  .projectNode {
+    inline-size: min(10rem, 44%);
+  }
+
+  .projectNode:nth-child(1) {
+    inset: 0 auto auto 0;
+  }
+
+  .projectNode:nth-child(2) {
+    inset: 0 0 auto auto;
+  }
+
+  .projectNode:nth-child(3) {
+    inset: auto 0 0 auto;
+  }
+
+  .projectNode:nth-child(4) {
+    inset: auto auto 0 0;
+  }
+
+  .ecosystemStageIndex,
+  .arcSelectors {
+    gap: var(--space-xs);
+  }
+
+  .ecosystemStageLink + .ecosystemStageLink {
+    padding-block-start: var(--space-md);
+  }
+
+  .arcSelectors {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .arcMachineLabel {
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+    text-align: center;
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .title {
+    animation: stage-enter var(--duration-stage-enter) var(--ease-out) both;
+  }
+
+  .scene {
+    animation: stage-enter var(--duration-stage-enter) 70ms var(--ease-out) both;
+  }
+
+  .readout,
+  .index {
+    animation: stage-enter var(--duration-stage-enter) 130ms var(--ease-out) both;
+  }
+
+  .footer {
+    animation: stage-enter var(--duration-stage-enter) 190ms var(--ease-out) both;
+  }
+}
+
+.stage[data-cinematic-entry='settled'] .title,
+.stage[data-cinematic-entry='settled'] .scene,
+.stage[data-cinematic-entry='settled'] .readout,
+.stage[data-cinematic-entry='settled'] .index,
+.stage[data-cinematic-entry='settled'] .footer {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 769px) {
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .homeMachine,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .homeMachine {
+    animation: home-monument-breathe 8.4s ease-in-out infinite;
+    animation-delay: -4.2s;
+    animation-play-state: running;
+  }
+
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .monumentBeacon,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .monumentBeacon {
+    animation: home-beacon-orbit 8.8s ease-in-out infinite;
+    animation-delay: -4.4s;
+    animation-play-state: running;
+  }
+
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand'][data-universe-morph-phase='morphing']) .stage[data-cinematic-entry='settled'] .homeMachine,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand'][data-universe-morph-phase='morphing']) .stage[data-cinematic-entry='settled'] .homeMachine,
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand'][data-universe-morph-phase='morphing']) .stage[data-cinematic-entry='settled'] .monumentBeacon,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand'][data-universe-morph-phase='morphing']) .stage[data-cinematic-entry='settled'] .monumentBeacon {
+    animation-play-state: paused;
+  }
+
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .arcMachine,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .arcMachine {
+    animation: arc-machine-breathe 9.2s ease-in-out infinite;
+    animation-delay: -4.6s;
+  }
+
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .arcSignalPath,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .arcSignalPath {
+    animation: arc-signal-pulse 9.2s ease-in-out infinite;
+    animation-delay: -4.6s;
+  }
+
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand']) .arcMass,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand']) .arcMass {
+    transition:
+      block-size var(--duration-scene-morph) var(--ease-in-out),
+      inline-size var(--duration-scene-morph) var(--ease-in-out),
+      transform var(--duration-scene-morph) var(--ease-in-out);
+  }
+
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand']) .arcSignalPath,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand']) .arcSignalPath {
+    transition:
+      block-size var(--duration-scene-morph) var(--ease-in-out),
+      inline-size var(--duration-scene-morph) var(--ease-in-out),
+      transform var(--duration-scene-morph) var(--ease-in-out);
+  }
+}
+
+@keyframes stage-enter {
+  from {
+    opacity: 0.16;
+    transform: translate3d(0, 10px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes home-monument-breathe {
+  0%,
+  100% {
+    transform: translate3d(-7px, 4px, 0) rotate(-3deg);
+  }
+
+  50% {
+    transform: translate3d(8px, -6px, 0) rotate(4deg);
+  }
+}
+
+@keyframes home-beacon-orbit {
+  0%,
+  100% {
+    opacity: 0.46;
+    transform: translate3d(-14px, 5px, 0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate3d(14px, -7px, 0);
+  }
+}
+
+@keyframes arc-machine-breathe {
+  0%,
+  100% {
+    transform: translate3d(-8px, 5px, 0) rotate(-3deg);
+  }
+
+  50% {
+    transform: translate3d(8px, -6px, 0) rotate(4deg);
+  }
+}
+
+@keyframes arc-signal-pulse {
+  0%,
+  100% {
+    opacity: 0.56;
+    transform: var(--arc-signal-base-transform) translate3d(-14px, 0, 0) scaleX(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: var(--arc-signal-base-transform) translate3d(14px, 0, 0) scaleX(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .homeMachine,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .homeMachine,
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .monumentBeacon,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .monumentBeacon,
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .arcMachine,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .arcMachine,
+  :global([data-universe-ready='true'][data-universe-quality='high'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .arcSignalPath,
+  :global([data-universe-ready='true'][data-universe-quality='medium'][data-universe-render-state='demand'][data-universe-morph-phase='idle']) .stage[data-cinematic-entry='settled'] .arcSignalPath,
+  .homeMachine,
+  .monumentBeacon,
+  .arcMachine,
+  .arcSignalPath {
+    animation: none !important;
+  }
+
+  .stage,
+  .stage *,
+  .stage *::before,
+  .stage *::after {
+    animation: none !important;
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+
+/* Task 14：Home 使用单一纪念碑式主角，而不是复用生态页三栏仪器。 */
+.home {
+  --home-field-opacity: 0.82;
+  --home-horizon-angle: -4deg;
+  --home-horizon-scale: 1;
+  --home-horizon-shift: 0px;
+  --home-visual-duration: 780ms;
+  aspect-ratio: auto;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: auto minmax(24rem, 1fr) auto;
+  max-block-size: none;
+  min-block-size: min(78rem, calc(100svh - 5rem));
+  overflow: visible;
+}
+
+.home[data-scene-motion='preview'] {
+  --home-visual-duration: 220ms;
+}
+
+.home[data-scene-motion='commit'] {
+  --home-visual-duration: 780ms;
+}
+
+.home[data-visual-project='signal-ledger'] {
+  --home-field-opacity: 0.78;
+  --home-horizon-angle: -4deg;
+  --home-horizon-scale: 1;
+  --home-horizon-shift: 0px;
+}
+
+.home[data-visual-project='hadron'] {
+  --home-field-opacity: 0.96;
+  --home-horizon-angle: 8deg;
+  --home-horizon-scale: 0.833;
+  --home-horizon-shift: 18px;
+}
+
+.home[data-visual-project='arcpredict'] {
+  --home-field-opacity: 0.72;
+  --home-horizon-angle: -11deg;
+  --home-horizon-scale: 1.095;
+  --home-horizon-shift: -14px;
+}
+
+.home[data-visual-project='rialo-captain'] {
+  --home-field-opacity: 1;
+  --home-horizon-angle: 14deg;
+  --home-horizon-scale: 0.762;
+  --home-horizon-shift: 26px;
+}
+
+.home::before {
+  background:
+    linear-gradient(90deg, transparent 2%, rgba(241, 234, 220, 0.11) 16%, rgba(241, 234, 220, 0.11) 84%, transparent 98%) 50% 72% / 100% 1px no-repeat;
+  inset: 0;
+  opacity: 0.62;
+}
+
+.home::after {
+  background:
+    radial-gradient(circle at 66% 48%, var(--stage-accent-soft), transparent 28%),
+    linear-gradient(110deg, transparent 22%, rgba(241, 234, 220, 0.035) 22.2% 58%, transparent 58.2%);
+  inset: 0;
+  opacity: 0.72;
+}
+
+.home .title {
+  align-content: start;
+  grid-column: 1 / 6;
+  grid-row: 1;
+  padding: clamp(1.5rem, 3vw, 2.8rem) clamp(1rem, 2.5vw, 2.2rem) 0;
+}
+
+.home .scene {
+  grid-column: 3 / 13;
+  grid-row: 1 / 4;
+  justify-items: end;
+  min-block-size: 0;
+  padding: 0;
+  z-index: 1;
+}
+
+.home .readout {
+  align-content: end;
+  align-self: end;
+  grid-column: 1 / 7;
+  grid-row: 2;
+  padding: clamp(1rem, 2vw, 2rem) clamp(1rem, 2.5vw, 2.2rem);
+  z-index: 4;
+}
+
+.home .index,
+.home:has(.readout) .index {
+  align-content: end;
+  grid-column: 1 / 13;
+  grid-row: 3;
+  padding: 0 clamp(1rem, 2.5vw, 2.2rem) clamp(1rem, 2.5vw, 2rem);
+  pointer-events: auto;
+  z-index: 5;
+}
+
+.homeHeadline {
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  max-inline-size: 20ch;
+  text-transform: uppercase;
+}
+
+.homeHeadline span {
+  display: inline;
+  white-space: normal;
+}
+
+.homeMachine {
+  aspect-ratio: auto;
+  block-size: clamp(34rem, 68vh, 52rem);
+  inline-size: min(68vw, 64rem);
+  margin-inline-end: max(clamp(-9rem, -5vw, -2rem), calc(var(--page-gutter) * -1));
+  position: relative;
+  transform: translate3d(0, -1%, 0);
+}
+
+.homeMachine::before {
+  background:
+    linear-gradient(145deg, rgba(241, 234, 220, 0.08), transparent 38%),
+    linear-gradient(160deg, #171c24 0 42%, #090c11 42% 100%);
+  border: 0;
+  border-radius: 42% 8% 38% 14%;
+  box-shadow:
+    -2.5rem 3.5rem 7rem rgba(0, 0, 0, 0.58),
+    inset 2px 0 color-mix(in srgb, var(--stage-accent), transparent 48%),
+    inset -1px 0 rgba(241, 234, 220, 0.1),
+    0 0 4.5rem color-mix(in srgb, var(--stage-accent), transparent 84%);
+  content: "";
+  inset: 15% 12% 9% 18%;
+  position: absolute;
+  transform: rotate(-8deg);
+  transition: transform var(--home-visual-duration) var(--ease-in-out);
+}
+
+.homeMachine::after {
+  border: 0;
+  border-block-start: 1px solid color-mix(in srgb, var(--stage-accent), transparent 48%);
+  border-radius: 50%;
+  content: "";
+  inset: 30% 5% 18% 8%;
+  position: absolute;
+  transform: rotate(-13deg);
+}
+
+.monumentPlane {
+  background: linear-gradient(155deg, #202630, #080a0f 72%);
+  box-shadow: 0 2.5rem 5rem rgba(0, 0, 0, 0.46);
+  display: block;
+  position: absolute;
+  transform-origin: 50% 70%;
+  transition: transform var(--home-visual-duration) var(--ease-in-out);
+}
+
+.monumentPlane:nth-child(1) {
+  block-size: 48%;
+  inline-size: 19%;
+  inset: 24% auto auto 38%;
+  transform: skewY(-8deg) rotate(-5deg);
+}
+
+.monumentPlane:nth-child(2) {
+  background: linear-gradient(135deg, #121720, #050609 76%);
+  block-size: 29%;
+  inline-size: 31%;
+  inset: 42% auto auto 51%;
+  transform: skewY(8deg) rotate(4deg);
+}
+
+.monumentPlane:nth-child(3) {
+  background: linear-gradient(165deg, #2a3039, #0a0c11 65%);
+  block-size: 16%;
+  inline-size: 42%;
+  inset: 34% auto auto 26%;
+  transform: perspective(30rem) rotateX(58deg) rotateZ(-7deg);
+}
+
+.homeMachine[data-project-shape='hadron'] .monumentPlane:nth-child(1) {
+  transform: translate3d(-22%, 17%, 0) skewY(-2deg) rotate(-17deg) scaleY(0.74);
+}
+
+.homeMachine[data-project-shape='hadron'] .monumentPlane:nth-child(2) {
+  transform: translate3d(27%, -14%, 0) skewY(4deg) rotate(18deg) scaleX(1.2);
+}
+
+.homeMachine[data-project-shape='arcpredict'] .monumentPlane:nth-child(1) {
+  transform: translate3d(-22%, 5%, 0) skewY(-14deg) rotate(-19deg) scaleY(0.9);
+}
+
+.homeMachine[data-project-shape='arcpredict'] .monumentPlane:nth-child(2) {
+  transform: translate3d(25%, 4%, 0) skewY(14deg) rotate(18deg) scaleX(0.88);
+}
+
+.homeMachine[data-project-shape='rialo-captain'] .monumentPlane:nth-child(1) {
+  transform: translate3d(-8%, -13%, 0) skewY(-4deg) rotate(14deg) scaleY(1.14);
+}
+
+.homeMachine[data-project-shape='rialo-captain'] .monumentPlane:nth-child(2) {
+  transform: translate3d(22%, 18%, 0) skewY(-8deg) rotate(-10deg) scaleX(1.08);
+}
+
+.homeMachine[data-project-shape='signal-ledger']::before {
+  transform: translate3d(0, 0, 0) rotate(-8deg) scale(1);
+}
+
+.homeMachine[data-project-shape='hadron']::before {
+  transform: translate3d(-3%, 1%, 0) rotate(-14deg) scale(0.96, 1.03);
+}
+
+.homeMachine[data-project-shape='arcpredict']::before {
+  transform: translate3d(2%, -2%, 0) rotate(-2deg) scale(1.04, 0.95);
+}
+
+.homeMachine[data-project-shape='rialo-captain']::before {
+  transform: translate3d(4%, 2%, 0) rotate(7deg) scale(0.94, 1.06);
+}
+
+.monumentHorizon {
+  background: linear-gradient(90deg, transparent, rgba(241, 234, 220, 0.38), transparent);
+  block-size: 1px;
+  inline-size: 84%;
+  inset: 72% 0 auto auto;
+  position: absolute;
+  transform: translate3d(var(--home-horizon-shift), 0, 0) rotate(var(--home-horizon-angle)) scaleX(var(--home-horizon-scale));
+  transition: transform var(--home-visual-duration) var(--ease-in-out);
+}
+
+.monumentBeacon {
+  background: var(--stage-accent);
+  block-size: 0.62rem;
+  box-shadow: 0 0 1.6rem color-mix(in srgb, var(--stage-accent), transparent 34%);
+  inline-size: 0.62rem;
+  inset: 48% auto auto 56%;
+  position: absolute;
+}
+
+.homeReadout {
+  display: grid;
+  gap: 0.65rem;
+  max-inline-size: min(100%, 45rem);
+}
+
+.activeProjectCoordinate {
+  color: var(--stage-accent);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.homeReadout h2 {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 6.5rem;
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 0.78;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.activeProjectStatement {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 3.4rem;
+  letter-spacing: -0.045em;
+  line-height: 0.94;
+  margin: 0;
+  max-inline-size: 18ch;
+  text-wrap: balance;
+}
+
+.homePrimaryLink {
+  inline-size: fit-content;
+  margin-block-start: 0.45rem;
+}
+
+.homeIndex {
+  align-items: end;
+  display: grid;
+  gap: clamp(0.75rem, 1.6vw, 1.5rem);
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.projectReel {
+  align-items: end;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.projectNode {
+  --node-accent: var(--stage-accent);
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-inline-start: var(--line-strong) solid rgba(241, 234, 220, 0.2);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: grid;
+  gap: 0.2rem;
+  inline-size: auto;
+  min-block-size: var(--control-min);
+  padding: 0.42rem clamp(0.5rem, 1.2vw, 0.9rem);
+  position: relative;
+  text-align: start;
+  transition:
+    border-color var(--duration-interaction) var(--ease-out),
+    color var(--duration-interaction) var(--ease-out),
+    transform var(--duration-interaction) var(--ease-out);
+}
+
+.projectNode::before {
+  display: none;
+}
+
+.projectNode:nth-child(n) {
+  inset: auto;
+}
+
+.projectNode[aria-pressed='true'] {
+  border-inline-start-color: var(--node-accent);
+  color: var(--text-primary);
+}
+
+.projectNode:hover,
+.projectNode:focus-visible {
+  background: transparent;
+  border-inline-start-color: var(--node-accent);
+  color: var(--text-primary);
+  transform: translateX(0.35rem);
+}
+
+.projectNodeIndex,
+.ecosystemNumber {
+  color: currentColor;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+}
+
+.projectNodeName {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.ecosystemStageIndex {
+  align-items: end;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ecosystemStageLink {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-block-end: 1px solid rgba(241, 234, 220, 0.2);
+  color: var(--text-secondary);
+  display: inline-flex;
+  gap: 0.4rem;
+  min-block-size: var(--control-min);
+  padding: 0.35rem 0.5rem;
+  text-decoration: none;
+}
+
+.ecosystemStageLink + .ecosystemStageLink {
+  padding-block-start: 0.35rem;
+}
+
+.ecosystemStageLink strong {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+}
+
+.ecosystemStageLink:hover,
+.ecosystemStageLink:focus-visible {
+  border-block-end-color: var(--stage-accent);
+  color: var(--text-primary);
+}
+
+.srOnly {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.noScriptRail {
+  display: grid;
+  gap: 0.5rem;
+  padding: var(--space-md);
+}
+
+.noScriptRail a {
+  color: var(--text-primary);
+  min-block-size: var(--control-min);
+  padding-block: 0.65rem;
+}
+
+@media (max-width: 700px) {
+  .home {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(22rem, 1fr) auto;
+    min-block-size: calc(100svh - 3.75rem);
+    overflow: visible;
+  }
+
+  .home .title {
+    grid-column: 1;
+    grid-row: 1;
+    padding: 1rem 1rem 0;
+    z-index: 5;
+  }
+
+  .home .scene {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    inline-size: 100%;
+    min-block-size: 28rem;
+    order: initial;
+  }
+
+  .home .readout {
+    align-content: end;
+    align-self: end;
+    grid-column: 1;
+    grid-row: 2;
+    inline-size: 100%;
+    order: initial;
+    padding: 4rem 1rem 1rem;
+    z-index: 4;
+  }
+
+  .home .index,
+  .home:has(.readout) .index {
+    grid-column: 1;
+    grid-row: 3;
+    inline-size: 100%;
+    order: initial;
+    padding: 0 1rem 1rem;
+  }
+
+  .homeMachine {
+    block-size: 31rem;
+    inline-size: 33rem;
+    margin-inline-end: max(-13rem, calc(var(--page-gutter) * -1));
+    transform: translate3d(0, 2%, 0);
+  }
+
+  .homeReadout h2 {
+    font-size: 4rem;
+    max-inline-size: 8ch;
+  }
+
+  .activeProjectStatement {
+    font-size: 2.5rem;
+    max-inline-size: 12ch;
+  }
+
+  .homeIndex {
+    align-items: stretch;
+    gap: 0.65rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .projectNode {
+    min-inline-size: 0;
+    padding-inline: 0.38rem;
+  }
+
+  .projectNodeIndex {
+    display: none;
+  }
+
+  .projectNodeName {
+    font-size: 0.68rem;
+  }
+
+  .ecosystemStageIndex {
+    justify-content: flex-end;
+  }
+
+  .stageCaption {
+    display: none;
+  }
+}
+
+/* Arc 是组装机器：三种 committed 状态只复用一组实体，不叠放三套图。 */
+.arc {
+  aspect-ratio: auto;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: auto minmax(27rem, 1fr) auto;
+  max-block-size: none;
+  min-block-size: min(76rem, calc(100svh - 5rem));
+  overflow: visible;
+}
+
+.arc::before {
+  background:
+    linear-gradient(90deg, transparent 4%, rgba(241, 234, 220, 0.11) 18%, rgba(241, 234, 220, 0.11) 82%, transparent 96%) 50% 76% / 100% 1px no-repeat;
+  inset: 0;
+}
+
+.arc::after {
+  background: radial-gradient(circle at 44% 52%, var(--ecosystem-glow), transparent 33%);
+  inset: 0;
+  opacity: 0.18;
+}
+
+.arc .title {
+  grid-column: 1 / 5;
+  grid-row: 1;
+  padding: clamp(1.5rem, 3vw, 2.8rem) clamp(1rem, 2.5vw, 2.2rem) 0;
+  z-index: 5;
+}
+
+.arc .scene {
+  grid-column: 1 / 11;
+  grid-row: 1 / 4;
+  justify-items: center;
+  padding: 0;
+  z-index: 1;
+}
+
+.arc .readout {
+  align-self: end;
+  grid-column: 8 / 13;
+  grid-row: 2;
+  padding: 1rem clamp(1rem, 2.5vw, 2.2rem) 2rem;
+  z-index: 4;
+}
+
+.arc .index,
+.arc:has(.readout) .index {
+  grid-column: 1 / 13;
+  grid-row: 3;
+  padding: 0 clamp(1rem, 2.5vw, 2.2rem) clamp(1rem, 2.5vw, 2rem);
+  pointer-events: auto;
+  z-index: 5;
+}
+
+.arc .ecosystemTitle {
+  font-size: 4.8rem;
+}
+
+.arcHeadline {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  letter-spacing: -0.045em;
+  line-height: 0.96;
+  max-inline-size: 14ch;
+  text-transform: none;
+}
+
+.arcMachine {
+  aspect-ratio: auto;
+  block-size: clamp(34rem, 64vh, 49rem);
+  display: block;
+  inline-size: min(66vw, 61rem);
+  position: relative;
+}
+
+.arcMachine::before {
+  background: linear-gradient(90deg, transparent, rgba(241, 234, 220, 0.28), transparent);
+  block-size: 1px;
+  content: "";
+  inline-size: 92%;
+  inset: 76% auto auto 4%;
+  position: absolute;
+}
+
+.arcHalo {
+  border: 1px solid color-mix(in srgb, var(--node-accent), transparent 38%);
+  box-shadow:
+    inset 0 0 3rem color-mix(in srgb, var(--node-accent), transparent 88%),
+    0 0 3.5rem color-mix(in srgb, var(--node-accent), transparent 86%);
+  display: block;
+  inset: 17% 24% 15%;
+  opacity: 0.58;
+  position: absolute;
+  transform: rotate(3deg);
+}
+
+.arcMass {
+  background: linear-gradient(150deg, #242b35, #080a0e 74%);
+  box-shadow:
+    0 2.8rem 5rem rgba(0, 0, 0, 0.52),
+    inset 1px 0 color-mix(in srgb, var(--node-accent), transparent 58%);
+  display: block;
+  position: absolute;
+  transform-origin: center;
+}
+
+.arcMass:nth-child(1) {
+  block-size: 56%;
+  inline-size: 13%;
+  inset: 20% auto auto 42%;
+}
+
+.arcMass:nth-child(2) {
+  background: linear-gradient(160deg, #171d26, #050609 76%);
+  block-size: 38%;
+  inline-size: 18%;
+  inset: 32% auto auto 52%;
+}
+
+.arcMass:nth-child(3) {
+  background:
+    repeating-linear-gradient(180deg, rgba(241, 234, 220, 0.13) 0 2px, transparent 2px 2.1rem),
+    linear-gradient(150deg, #1a2029, #07090d);
+  block-size: 50%;
+  inline-size: 10%;
+  inset: 25% auto auto 34%;
+}
+
+.arcMachine[data-arc-form='exchange'] .arcMass:nth-child(1) {
+  block-size: 18%;
+  inline-size: 36%;
+  transform: translate3d(-31%, 16%, 0) perspective(35rem) rotateY(24deg);
+}
+
+.arcMachine[data-arc-form='exchange'] .arcMass:nth-child(2) {
+  block-size: 18%;
+  inline-size: 36%;
+  transform: translate3d(15%, 12%, 0) perspective(35rem) rotateY(-24deg);
+}
+
+.arcMachine[data-arc-form='exchange'] .arcMass:nth-child(3) {
+  block-size: 58%;
+  inline-size: 3%;
+  transform: translate3d(470%, -4%, 0);
+}
+
+.arcMachine[data-arc-form='forecast'] .arcMass:nth-child(1) {
+  block-size: 16%;
+  inline-size: 43%;
+  transform: translate3d(-24%, 25%, 0) rotate(-31deg) skewX(-10deg);
+}
+
+.arcMachine[data-arc-form='forecast'] .arcMass:nth-child(2) {
+  block-size: 16%;
+  inline-size: 43%;
+  transform: translate3d(12%, 22%, 0) rotate(31deg) skewX(10deg);
+}
+
+.arcMachine[data-arc-form='forecast'] .arcMass:nth-child(3) {
+  block-size: 42%;
+  inline-size: 7%;
+  transform: translate3d(185%, 26%, 0) scaleY(0.74);
+}
+
+.arcSignalPath {
+  block-size: 0;
+  border-block-start: 2px solid var(--node-accent);
+  display: block;
+  inline-size: 32%;
+  inset: 52% auto auto 35%;
+  position: absolute;
+  transform: rotate(-4deg);
+}
+
+.arcMachine[data-arc-form='exchange'] .arcSignalPath {
+  inline-size: 46%;
+  transform: translate3d(-12%, 12%, 0) rotate(8deg);
+}
+
+.arcMachine[data-arc-form='forecast'] .arcSignalPath {
+  border-block-start: 0;
+  border-inline-start: 2px solid var(--node-accent);
+  block-size: 27%;
+  clip-path: polygon(0 0, 100% 0, 100% 7%, 8% 7%, 8% 100%, 0 100%);
+  inline-size: 24%;
+  transform: rotate(43deg);
+}
+
+.arcReadout {
+  max-inline-size: 34rem;
+}
+
+.arcReadout h2 {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 0.86;
+}
+
+.readoutClaim {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+}
+
+.arcSelectors {
+  margin-inline-start: auto;
+  max-inline-size: 42rem;
+}
+
+.arcSelector {
+  color: var(--text-muted);
+}
+
+.arcSelector[aria-pressed='true'] {
+  color: var(--text-primary);
+}
+
+@media (max-width: 700px) {
+  .arc {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(22rem, 1fr) auto;
+    min-block-size: calc(100svh - 3.75rem);
+  }
+
+  .arc .title {
+    grid-column: 1;
+    grid-row: 1;
+    padding: 1rem 1rem 0;
+  }
+
+  .arc .scene {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    inline-size: 100%;
+    min-block-size: 28rem;
+    order: initial;
+  }
+
+  .arc .readout {
+    align-self: end;
+    grid-column: 1;
+    grid-row: 2;
+    inline-size: 100%;
+    order: initial;
+    padding: 4rem 1rem 1rem;
+  }
+
+  .arc .index,
+  .arc:has(.readout) .index {
+    grid-column: 1;
+    grid-row: 3;
+    inline-size: 100%;
+    order: initial;
+    padding: 0 1rem 1rem;
+  }
+
+  .arcMachine {
+    block-size: 31rem;
+    inline-size: 35rem;
+    justify-self: start;
+    margin-inline-start: calc(100% - 35rem);
+    transform: translate3d(min(0px, calc(10.5rem - 50vw + var(--page-gutter))), 0, 0);
+  }
+
+  .arc .ecosystemTitle {
+    font-size: 3rem;
+  }
+
+  .arcHeadline {
+    font-size: 1.4rem;
+  }
+
+  .arcReadout h2 {
+    font-size: 3.8rem;
+  }
+
+  .readoutClaim {
+    font-size: 2.4rem;
+    max-inline-size: 12ch;
+  }
+
+  .arcSelectors {
+    max-inline-size: none;
+  }
+
+  .arcSelector small {
+    display: none;
+  }
+}
+
+/* Home 的标题只承担可见身份标识，不再与当前项目读数争夺视觉层级。 */
+.home .homeHeadline {
+  color: var(--text-primary);
+  cursor: default;
+  font-family: var(--font-display);
+  font-size: 4.6rem;
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  max-inline-size: 9ch;
+  overflow-wrap: normal;
+  text-transform: none;
+  white-space: normal;
+}
+
+@media (max-width: 700px) {
+  .home .homeHeadline {
+    font-size: 2.8rem;
+    max-inline-size: 12ch;
+  }
+}
+
+/* Art direction recovery：Arc 的机器和 readout 共用同一开放基准与光场。 */
+.arc {
+  --arc-datum: 72%;
+}
+
+.arc::before {
+  background:
+    linear-gradient(90deg, transparent 3%, rgba(241, 234, 220, 0.12) 18%, rgba(241, 234, 220, 0.12) 82%, transparent 97%) 50% var(--arc-datum) / 100% 1px no-repeat;
+}
+
+.arc::after {
+  background: radial-gradient(circle at 58% 52%, var(--ecosystem-glow), transparent 38%);
+  opacity: 0.28;
+}
+
+.arc .scene {
+  grid-column: 1 / 10;
+  justify-items: end;
+}
+
+.arc .readout {
+  grid-column: 7 / 13;
+  padding-inline-start: 0;
+}
+
+.arc .ecosystemTitle {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  opacity: 0.62;
+  text-transform: uppercase;
+}
+
+.arcMachine {
+  inline-size: min(70vw, 64rem);
+}
+
+.arcReadout {
+  background: transparent;
+  border: 0;
+  gap: 0.8rem;
+  max-inline-size: 38rem;
+  padding: clamp(1rem, 2vw, 1.75rem) 0 clamp(1rem, 2vw, 1.75rem) clamp(1rem, 2.4vw, 2.25rem);
+  position: relative;
+}
+
+.arcReadout h2 {
+  font-size: 4rem;
+  overflow-wrap: normal;
+  white-space: nowrap;
+  word-break: normal;
+}
+
+.arcReadout .stagePrimaryLink {
+  inline-size: fit-content;
+}
+
+.arcSelector {
+  background: transparent;
+  border: 0;
+  position: relative;
+  transform: none;
+}
+
+.arcSelector::before {
+  background: transparent;
+  block-size: 1px;
+  content: "";
+  inline-size: 0;
+  inset: 0 auto auto 0.75rem;
+  position: absolute;
+  transition:
+    background-color var(--duration-interaction) var(--ease-out),
+    inline-size var(--duration-interaction) var(--ease-out);
+}
+
+.arcSelector:hover,
+.arcSelector:focus-visible,
+.arcSelector[aria-pressed='true'] {
+  background: transparent;
+  transform: none;
+}
+
+.arcSelector[aria-pressed='true']::before {
+  background: var(--stage-accent);
+  inline-size: 2.5rem;
+}
+
+@media (max-width: 700px) {
+  .home {
+    grid-template-rows: auto minmax(24rem, 1fr) auto;
+  }
+
+  .home .scene {
+    min-block-size: 29rem;
+  }
+
+  .home .readout {
+    padding: 8rem 1rem 1.25rem;
+  }
+
+  .homeMachine {
+    block-size: 29rem;
+    inline-size: 100%;
+    justify-self: center;
+    margin-inline: 0;
+    max-inline-size: 33rem;
+    transform: translate3d(0, 1rem, 0);
+  }
+
+  .activeProjectStatement {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    letter-spacing: 0;
+    line-height: 1.45;
+    max-inline-size: 34ch;
+    text-wrap: pretty;
+  }
+
+  .homePrimaryLink {
+    inline-size: fit-content;
+  }
+
+  .projectReel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .projectNode {
+    min-block-size: var(--control-min);
+    min-inline-size: 0;
+  }
+
+  .ecosystemStageIndex {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    inline-size: 100%;
+  }
+
+  .ecosystemStageLink {
+    justify-content: center;
+    min-block-size: var(--control-min);
+    min-inline-size: 0;
+  }
+
+  .arc::after {
+    background: radial-gradient(circle at 58% 52%, var(--ecosystem-glow), transparent 42%);
+  }
+
+  .arc .scene {
+    grid-column: 1;
+    justify-items: start;
+  }
+
+  .arc .readout {
+    grid-column: 1;
+    padding-inline: 1rem;
+  }
+
+  .arc .ecosystemTitle {
+    font-size: 0.72rem;
+  }
+
+  .arcMachine {
+    block-size: 31rem;
+    inline-size: 35rem;
+    justify-self: start;
+    margin-inline-start: calc(100% - 35rem);
+    transform: translate3d(min(0px, calc(10.5rem - 50vw + var(--page-gutter))), 0, 0);
+  }
+
+  .arcReadout {
+    inline-size: auto;
+    max-inline-size: 100%;
+    padding: 1rem 0;
+  }
+
+  .arcReadout h2 {
+    font-size: 2.4rem;
+    white-space: nowrap;
+  }
+
+  .readoutClaim {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    letter-spacing: 0;
+    line-height: 1.45;
+    max-inline-size: 34ch;
+  }
+}
+
+/* Browser RED 与专业 art-direction 收口：只调整现有场、实体与信号载体。 */
+.home::before {
+  background:
+    linear-gradient(90deg, transparent 3%, rgba(241, 234, 220, 0.07) 18%, rgba(241, 234, 220, 0.07) 82%, transparent 97%) 50% 72% / 100% 1px no-repeat;
+  opacity: 0.38;
+}
+
+.home::after {
+  background:
+    radial-gradient(ellipse at 66% 48%, var(--stage-accent-soft), transparent 72%, transparent 100%),
+    linear-gradient(110deg, transparent 0%, rgba(241, 234, 220, 0.018) 42%, transparent 100%);
+  inset-block-start: -7.5rem;
+  opacity: var(--home-field-opacity);
+  transition: opacity var(--home-visual-duration) var(--ease-in-out);
+  z-index: 1;
+}
+
+.homeMachine::before {
+  background:
+    linear-gradient(145deg, rgba(241, 234, 220, 0.13), transparent 40%),
+    linear-gradient(160deg, #252d38 0 42%, #111721 42% 100%);
+  box-shadow:
+    -2rem 3rem 6rem rgba(0, 0, 0, 0.42),
+    inset 2px 0 color-mix(in srgb, var(--stage-accent), transparent 42%),
+    inset -1px 0 rgba(241, 234, 220, 0.14),
+    0 0 3.5rem color-mix(in srgb, var(--stage-accent), transparent 88%);
+}
+
+.homeMachine::after {
+  border-block-start-color: color-mix(in srgb, var(--stage-accent), transparent 66%);
+}
+
+.monumentPlane {
+  background: linear-gradient(155deg, #303946, #111821 72%);
+  box-shadow:
+    0 2.2rem 4.5rem rgba(0, 0, 0, 0.34),
+    inset 1px 0 color-mix(in srgb, var(--stage-accent), transparent 58%);
+}
+
+.monumentPlane:nth-child(2) {
+  background: linear-gradient(135deg, #252e3a, #0e141d 76%);
+}
+
+.monumentPlane:nth-child(3) {
+  background: linear-gradient(165deg, #3a4450, #141b25 65%);
+}
+
+.monumentHorizon {
+  background: linear-gradient(90deg, transparent, rgba(241, 234, 220, 0.22), transparent);
+  inline-size: 84%;
+  transform: translate3d(var(--home-horizon-shift), 0, 0) rotate(var(--home-horizon-angle)) scaleX(var(--home-horizon-scale));
+  transition: transform var(--home-visual-duration) var(--ease-in-out);
+}
+
+.arc::before {
+  background:
+    linear-gradient(90deg, transparent 4%, rgba(241, 234, 220, 0.07) 18%, rgba(241, 234, 220, 0.07) 82%, transparent 96%) 50% var(--arc-datum) / 100% 1px no-repeat;
+  opacity: 0.48;
+}
+
+.arc::after {
+  background: radial-gradient(ellipse at 58% 52%, var(--ecosystem-glow), transparent 74%, transparent 100%);
+  inset-block-start: -7.5rem;
+  opacity: 0.72;
+  z-index: 1;
+}
+
+.arcHalo {
+  border-color: color-mix(in srgb, var(--node-accent), transparent 68%);
+  box-shadow:
+    inset 0 0 2.5rem color-mix(in srgb, var(--node-accent), transparent 92%),
+    0 0 2.5rem color-mix(in srgb, var(--node-accent), transparent 91%);
+  opacity: 0.36;
+}
+
+.arcMass {
+  background: linear-gradient(150deg, #343e4b, #121923 74%);
+  box-shadow:
+    0 2.4rem 4.5rem rgba(0, 0, 0, 0.38),
+    inset 1px 0 color-mix(in srgb, var(--node-accent), transparent 48%);
+}
+
+.arcMass:nth-child(2) {
+  background: linear-gradient(160deg, #293440, #0e151e 76%);
+}
+
+.arcMass:nth-child(3) {
+  background:
+    repeating-linear-gradient(180deg, rgba(241, 234, 220, 0.07) 0 2px, transparent 2px 2.1rem),
+    linear-gradient(150deg, #303a46, #101720);
+}
+
+.arcSignalPath {
+  --arc-signal-base-transform: rotate(-4deg);
+  transform: var(--arc-signal-base-transform);
+  transform-origin: left center;
+}
+
+.arcMachine[data-arc-form='exchange'] .arcSignalPath {
+  --arc-signal-base-transform: translate3d(-12%, 12%, 0) rotate(8deg);
+  transform: var(--arc-signal-base-transform);
+}
+
+.arcMachine[data-arc-form='forecast'] .arcSignalPath {
+  --arc-signal-base-transform: rotate(43deg);
+  transform: var(--arc-signal-base-transform);
+}
+
+@media (max-width: 700px) {
+  .home .homeHeadline {
+    font-size: 2.6rem;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .arcReadout {
+    inline-size: auto;
+    max-inline-size: 100%;
+  }
+
+  .arcReadout h2 {
+    font-size: 2.4rem;
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 701px) {
+  .home .scene {
+    padding-inline-end: 0.75rem;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 900px) {
+  .arcReadout h2 {
+    font-size: 2.3rem;
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1279px) {
+  .arcReadout h2 {
+    font-size: 3rem;
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 1280px) {
+  .arcReadout h2 {
+    font-size: 4rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 700px) {
+  .homeMachine {
+    inline-size: calc(100% - 1.25rem);
+    margin-inline: auto;
+    max-inline-size: 31.75rem;
+    overflow: visible;
+  }
+
+  .homeMachine::before {
+    inset: 17% 15% 11% 20%;
+  }
+
+  .homeMachine::after {
+    inset: 32% 9% 20% 11%;
+  }
+
+  .arcReadout {
+    box-sizing: border-box;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  .arcReadout h2 {
+    font-size: 2rem;
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 701px) {
+  .home .scene {
+    padding-inline-end: 2rem;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 768px) {
+  .home .homeHeadline {
+    font-size: 1.7rem;
+    max-inline-size: 100%;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .homeMachine {
+    margin-inline-end: 0;
+  }
+}
+
+@media (min-width: 769px) {
+  .homeMachine {
+    margin-inline-end: 0;
+  }
+}

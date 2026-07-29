@@ -1,0 +1,188 @@
+.facade {
+  color: var(--color-deep-space-text);
+  isolation: isolate;
+  /* 高度由首页网格的 minmax(0, 1fr) 决定，自身不再撑满视口 */
+  min-block-size: 0;
+  overflow: clip;
+  position: relative;
+}
+
+.facade::before {
+  background: radial-gradient(
+    ellipse at 50% 42%,
+    rgba(127, 176, 255, 0.06),
+    transparent 62%
+  );
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.door {
+  block-size: 100%;
+  display: flex;
+  padding: 0 max(1rem, var(--page-gutter));
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
+}
+
+/* 落在星场区内的安全区，不再贴盒子底边骑在折叠线上 */
+.statement {
+  align-self: end;
+  display: grid;
+  gap: 0.9rem;
+  margin-block-end: clamp(2rem, 6vh, 4rem);
+  max-width: 34ch;
+}
+
+.manifesto {
+  color: var(--color-deep-space-text);
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  margin: 0;
+  mix-blend-mode: screen;
+  text-shadow: 0 0 0.7em rgba(127, 176, 255, 0.22);
+}
+
+.meta {
+  color: rgba(244, 247, 255, 0.62);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+@media (max-width: 42rem) {
+  .manifesto {
+    font-size: 1.9rem;
+  }
+}
+
+/* wordmark 作为 SEO/无障碍 h1 保留，视觉品牌由站点 Header 呈现 */
+.wordmark {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.semanticLinks {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.semanticLinks:focus-within {
+  background: rgba(5, 6, 10, 0.94);
+  border: 1px solid rgba(127, 176, 255, 0.4);
+  clip: auto;
+  clip-path: none;
+  height: auto;
+  inset: auto 1rem 1rem;
+  overflow: visible;
+  padding: 1rem;
+  white-space: normal;
+  width: auto;
+  z-index: 3;
+}
+
+.semanticLinks nav,
+.noScriptLinks nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.semanticLinks p,
+.noScriptLinks p {
+  color: rgba(244, 247, 255, 0.6);
+  flex-basis: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.semanticLinks a,
+.noScriptLinks a {
+  border: 1px solid rgba(127, 176, 255, 0.36);
+  color: var(--color-deep-space-text);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.42rem 0.58rem;
+  text-decoration: none;
+}
+
+.noScriptLinks {
+  color: var(--color-deep-space-text);
+  margin: 0 max(1rem, var(--page-gutter)) 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.cursor {
+  block-size: 1.75rem;
+  border: 1px solid rgba(127, 176, 255, 0.88);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0.8rem rgba(127, 176, 255, 0.3),
+    inset 0 0 0.5rem rgba(127, 176, 255, 0.16);
+  inline-size: 1.75rem;
+  inset: 0 auto auto 0;
+  mix-blend-mode: screen;
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 120ms ease-out;
+  will-change: transform;
+  z-index: 60;
+}
+
+.cursor[data-active="true"] {
+  opacity: 1;
+}
+
+.facade[data-motion="static"] .cursor {
+  display: none;
+}
+
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .facade,
+  .facade a {
+    cursor: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .cursor {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wordmark {
+    transform: translate3d(0, 0, 0);
+    will-change: auto;
+  }
+
+  .cursor {
+    display: none;
+    transition: none;
+  }
+}
+

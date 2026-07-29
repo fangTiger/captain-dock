@@ -1,0 +1,65 @@
+.plate {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+}
+
+.caption {
+  display: none;
+}
+
+.stars {
+  fill: #f4f7ff;
+  opacity: 0.62;
+}
+
+.edges {
+  stroke: #7fb0ff;
+  stroke-width: 1;
+  opacity: 0.42;
+}
+
+.clusterAura {
+  fill: currentColor;
+  opacity: 0.08;
+  stroke: currentColor;
+  stroke-width: 1;
+}
+
+.arc {
+  color: #7fb0ff;
+}
+
+.rialo {
+  color: #e7a94b;
+}
+
+.nodeGlow {
+  fill: currentColor;
+  opacity: 0.2;
+}
+
+.nodeCore {
+  fill: currentColor;
+  stroke: #05060a;
+  stroke-width: 2;
+}
+
+[data-constellation-cluster][data-active='true'] > .clusterAura,
+[data-constellation-node][data-active='true'] > .nodeGlow {
+  opacity: 0.48;
+  filter: drop-shadow(0 0 9px currentColor);
+}
+
+[data-constellation-node][data-active='true'] > .nodeCore {
+  stroke: #f4f7ff;
+  filter: drop-shadow(0 0 7px currentColor);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate,
+  .plate * {
+    transition-property: none !important;
+  }
+}

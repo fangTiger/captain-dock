@@ -1,0 +1,145 @@
+.figure {
+  --scene-ink: #f8fbff;
+  --scene-muted: #9aa8b4;
+  --scene-line: rgba(248, 251, 255, 0.24);
+  --scene-accent-a: #40c7d1;
+  --scene-accent-b: #d7b35f;
+  --scene-accent-c: #8fd478;
+  position: relative;
+  display: grid;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--scene-ink);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  letter-spacing: 0;
+  opacity: 0.14;
+  pointer-events: none;
+}
+
+.home {
+  --scene-accent-a: #3ec5d6;
+  --scene-accent-b: #8fd478;
+  --scene-accent-c: #d7b35f;
+}
+
+.arc {
+  --scene-accent-a: #5bb7ff;
+  --scene-accent-b: #f0c56c;
+  --scene-accent-c: #b6a4ff;
+}
+
+.rialo {
+  --scene-accent-a: #8fd478;
+  --scene-accent-b: #61d4ff;
+  --scene-accent-c: #f2d36b;
+}
+
+.plate {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  min-width: 0;
+}
+
+.caption {
+  display: none;
+  padding: 0.75rem 0.875rem 0.875rem;
+  color: var(--scene-muted);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  letter-spacing: 0;
+  border-top: 1px solid var(--scene-line);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.gridLine {
+  stroke: rgba(248, 251, 255, 0.16);
+  stroke-width: 1;
+}
+
+.trackPrimary {
+  fill: none;
+  stroke: var(--scene-accent-a);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.trackSecondary {
+  fill: none;
+  stroke: var(--scene-accent-c);
+  stroke-width: 2;
+  stroke-dasharray: 7 6;
+  vector-effect: non-scaling-stroke;
+}
+
+.nodePrimary {
+  fill: var(--scene-accent-a);
+  stroke: #071019;
+  stroke-width: 3;
+}
+
+.nodeSecondary {
+  fill: var(--scene-accent-b);
+  stroke: #071019;
+  stroke-width: 3;
+}
+
+[data-active='true'] > .trackPrimary,
+[data-active='true'] > .trackSecondary,
+.nodePrimary[data-active='true'],
+.nodeSecondary[data-active='true'],
+.signalPlate[data-active='true'],
+[data-rialo-node][data-active='true'] > .nodePrimary,
+[data-rialo-node][data-active='true'] > .nodeSecondary {
+  stroke: var(--scene-accent-b);
+  stroke-width: 4;
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--scene-accent-b) 54%, transparent));
+}
+
+.signalPlate {
+  fill: rgba(248, 251, 255, 0.09);
+  stroke: var(--scene-line);
+  stroke-width: 1;
+}
+
+.signalLine {
+  fill: none;
+  stroke: var(--scene-accent-b);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.radarSweep {
+  fill: rgba(143, 212, 120, 0.1);
+  stroke: var(--scene-accent-a);
+  stroke-width: 1.5;
+}
+
+.route {
+  fill: none;
+  stroke: var(--scene-accent-b);
+  stroke-width: 2;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+
+.label {
+  fill: var(--scene-muted);
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figure,
+  .figure * {
+    transition-property: none !important;
+  }
+}

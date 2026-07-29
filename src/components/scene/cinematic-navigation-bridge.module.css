@@ -1,0 +1,119 @@
+.carrierRoot {
+  --carrier-accent: var(
+    --project-accent,
+    var(--active-project-accent, #a8f0dd)
+  );
+  --carrier-angle: -7deg;
+  --carrier-top: 44svh;
+  background: transparent;
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+  position: fixed;
+  z-index: 100;
+}
+
+.carrierLane {
+  block-size: clamp(4.5rem, 11svh, 7rem);
+  inline-size: 68vw;
+  inset-block-start: var(--carrier-top);
+  inset-inline-start: 0;
+  opacity: var(--cinematic-carrier-opacity);
+  position: absolute;
+  transform:
+    translate3d(var(--cinematic-carrier-x), 0, 0)
+    rotate(var(--carrier-angle));
+  transform-origin: 0 50%;
+  will-change: opacity, transform;
+}
+
+.carrierTrack,
+.carrierMass,
+.carrierSignal {
+  display: block;
+  pointer-events: none;
+  position: absolute;
+}
+
+.carrierTrack {
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--carrier-accent), transparent 48%) 8% 84%,
+      transparent
+    );
+  block-size: 2px;
+  inline-size: 68vw;
+  inset-block-start: 50%;
+  inset-inline-start: 0;
+  opacity: 0.84;
+}
+
+.carrierMass {
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--carrier-accent), #111820 72%),
+      color-mix(in srgb, var(--carrier-accent), #07090d 86%)
+    );
+  block-size: clamp(3.5rem, 9svh, 5.5rem);
+  clip-path: polygon(0 18%, 78% 0, 100% 46%, 84% 100%, 8% 82%);
+  inline-size: clamp(8rem, 20vw, 18rem);
+  inset-block-start: 50%;
+  inset-inline-start: 27vw;
+  opacity: var(--cinematic-carrier-mass-opacity);
+  transform:
+    translate3d(0, -50%, 0)
+    scaleX(var(--cinematic-carrier-mass-scale));
+  transform-origin: 50% 50%;
+  will-change: opacity, transform;
+}
+
+.carrierSignal {
+  background: var(--carrier-accent);
+  block-size: clamp(0.75rem, 1.2vw, 1.1rem);
+  clip-path: polygon(0 35%, 68% 35%, 68% 0, 100% 50%, 68% 100%, 68% 65%, 0 65%);
+  inline-size: clamp(2rem, 3.6vw, 3.5rem);
+  inset-block-start: 50%;
+  inset-inline-start: 64vw;
+  opacity: 1;
+  transform: translate3d(0, -50%, 0);
+}
+
+.carrierRoot[data-cinematic-carrier-direction="home-beacon"] {
+  --carrier-angle: -7deg;
+  --carrier-top: 46svh;
+}
+
+.carrierRoot[data-cinematic-carrier-direction="arc-signal-path"] {
+  --carrier-angle: 4deg;
+  --carrier-top: 35svh;
+}
+
+.carrierRoot[data-cinematic-carrier-direction="rialo-route"] {
+  --carrier-angle: -14deg;
+  --carrier-top: 59svh;
+}
+
+@media (max-width: 759px) {
+  .carrierLane,
+  .carrierTrack {
+    inline-size: 72vw;
+  }
+
+  .carrierMass {
+    inline-size: 28vw;
+    inset-inline-start: 25vw;
+  }
+
+  .carrierSignal {
+    inset-inline-start: 66vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carrierRoot {
+    display: none;
+  }
+}
