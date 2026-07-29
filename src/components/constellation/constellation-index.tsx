@@ -8,7 +8,7 @@ type ConstellationIndexProps = Readonly<{
 /** 首页底部的作品索引条：星场负责氛围，这里负责可扫读的信息。 */
 export function ConstellationIndex({ projects }: ConstellationIndexProps) {
   return (
-    <nav aria-label="Project index" className={styles.index}>
+    <nav aria-label="Project index" className={styles.index} id="project-index">
       {projects.map((project) => (
         <a
           className={styles.entry}
