@@ -19,12 +19,18 @@
   position: absolute;
 }
 
+/*
+ * 绝对定位而非 block-size:100%：门面区是 grid 的 minmax(0, 1fr) 行，
+ * 百分比高度会和 1fr 互相依赖，浏览器回退到内容高度，
+ * 于是 main 的 scrollHeight 比实际高出一截，破坏零滚动。
+ * door 本就是 pointer-events:none 的装饰层，脱离流最干净。
+ */
 .door {
-  block-size: 100%;
   display: flex;
+  inset: 0;
   padding: 0 max(1rem, var(--page-gutter));
   pointer-events: none;
-  position: relative;
+  position: absolute;
   z-index: 1;
 }
 
@@ -74,64 +80,6 @@
   position: absolute;
   white-space: nowrap;
   width: 1px;
-}
-
-.semanticLinks {
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
-}
-
-.semanticLinks:focus-within {
-  background: rgba(5, 6, 10, 0.94);
-  border: 1px solid rgba(127, 176, 255, 0.4);
-  clip: auto;
-  clip-path: none;
-  height: auto;
-  inset: auto 1rem 1rem;
-  overflow: visible;
-  padding: 1rem;
-  white-space: normal;
-  width: auto;
-  z-index: 3;
-}
-
-.semanticLinks nav,
-.noScriptLinks nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-}
-
-.semanticLinks p,
-.noScriptLinks p {
-  color: rgba(244, 247, 255, 0.6);
-  flex-basis: 100%;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  margin: 0;
-  text-transform: uppercase;
-}
-
-.semanticLinks a,
-.noScriptLinks a {
-  border: 1px solid rgba(127, 176, 255, 0.36);
-  color: var(--color-deep-space-text);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  padding: 0.42rem 0.58rem;
-  text-decoration: none;
-}
-
-.noScriptLinks {
-  color: var(--color-deep-space-text);
-  margin: 0 max(1rem, var(--page-gutter)) 1rem;
-  position: relative;
-  z-index: 2;
 }
 
 .cursor {

@@ -130,6 +130,34 @@
     width: 100%;
   }
 
+  /*
+   * 首页是零滚动门面：让内容区自动吃掉 header 之外的全部高度。
+   * 不能把 header 高度硬编码成 5rem —— 它桌面 73px、移动端换行后 134px。
+   */
+  body:has([data-home-facade]) {
+    display: flex;
+    flex-direction: column;
+    min-block-size: 100svh;
+  }
+
+  body:has([data-home-facade]) .site-content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-block-size: 0;
+  }
+
+  /* UniverseShell 在 .site-content 与 main 之间还夹了两层容器（shell / contentLayer），
+     逐层拉伸把高度传到 main。sceneLayer 是绝对定位，不参与 flex 布局。 */
+  body:has([data-home-facade]) .site-content > *,
+  body:has([data-home-facade]) .site-content > * > * {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-block-size: 0;
+  }
+
+
   #main-content > section {
     border-block-start: var(--line-hair) solid var(--color-line);
     margin-block-start: var(--space-xl);
@@ -562,4 +590,21 @@
       padding: var(--space-sm);
     }
   }
+}
+
+/*
+ * 首页门面的场景层高度覆盖。
+ *
+ * 刻意放在 @layer 之外：universe-shell.module.css 的 .sceneLayer 设了
+ * block-size: clamp(36rem, 76svh, 50rem)，CSS Modules 不参与 @layer，
+ * 优先级高于任何分层规则。未分层的这条才压得住它。
+ *
+ * 那个 36rem 下限在 667px 高的屏幕上会连同 header 一起顶破一屏，
+ * 破坏门面页的零滚动。
+ */
+body:has([data-home-facade]) [data-universe-scene-layer] {
+  block-size: 100%;
+  /* 同文件 @media (max-width: 759px) 还给场景层加了 translateY(2rem)，
+     那是为可滚动首页调的视觉下移，在门面页会把它顶出视口 */
+  transform: none;
 }

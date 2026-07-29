@@ -6,8 +6,8 @@
 }
 
 .homePage {
-  /* 固定高而非 min-height：首页零滚动，星场区可压缩、索引条按内容 */
-  block-size: calc(100svh - 5rem);
+  /* 高度交给 body flex 分配（见 globals.css 的 [data-home-facade] 规则），
+     这里只定两行节奏：星场区可压缩、索引条按内容占位 */
   gap: 0;
   grid-template-rows: minmax(0, 1fr) auto;
 }
@@ -17,6 +17,24 @@
   isolation: isolate;
   max-width: calc(var(--stage-max-width) + var(--page-gutter) + var(--page-gutter));
   position: relative;
+}
+
+/* 门面吃满 .site-content 分到的高度，并清掉全局 #main-content 的内边距，
+   否则索引条会离视口底部差一截 */
+:global(#main-content).homePage {
+  flex: 1 1 auto;
+  min-height: 0;
+  /* 门面是一屏定死的，不产生滚动区域 */
+  overflow: clip;
+  padding: 0;
+}
+
+/* 门面的 section 不吃全局 #main-content > section 的分节节奏，
+   那条 margin-block-start 会把文档顶出视口一个 --space-xl */
+:global(#main-content).homePage > section {
+  border-block-start: 0;
+  margin-block-start: 0;
+  padding-block-start: 0;
 }
 
 /* 首页不留底部内边距，否则文档会比视口高出这一截 */

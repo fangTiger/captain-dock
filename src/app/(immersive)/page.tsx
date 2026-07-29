@@ -9,7 +9,7 @@ export const metadata = buildRouteMetadata('/')
 
 export default function HomePage() {
   return (
-    <main className={styles.homePage} id="main-content">
+    <main className={styles.homePage} data-home-facade id="main-content">
       <JsonLd data={buildHomeJsonLd()} />
       <ConstellationFacade ecosystems={ecosystems} projects={projects} />
       <ConstellationIndex projects={projects} />

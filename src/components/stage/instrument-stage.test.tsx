@@ -520,8 +520,10 @@ describe('InstrumentStage contract', () => {
     expect(immersiveMain).not.toMatch(/(?:block-size|min-block-size|max-block-size)\s*:/)
     // 生态页仍需 main 与 footer 之间的呼吸；首页零滚动且不渲染 footer，故该节奏不适用于它
     expect(pageCss).toContain('padding-block-end: clamp(20px, 2vw, 40px);')
-    // 首页门面固定一屏高：星场区可压缩，索引条按内容占位
-    expect(pageCss).toContain('block-size: calc(100svh - 5rem);')
+    // 首页门面高度由 body flex 链分配，不得再硬编码 header 高度——
+    // 5rem 只在桌面接近真值（实测 73px），移动端 header 换行后是 134px，
+    // 硬编码会让文档比视口高出 54px。
+    expect(pageCss).not.toContain('calc(100svh - 5rem)')
     expect(pageCss).toContain('grid-template-rows: minmax(0, 1fr) auto;')
   })
 })

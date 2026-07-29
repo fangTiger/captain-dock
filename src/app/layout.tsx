@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 
 import { SkipLink } from '../components/shell/skip-link.client'
 import { SiteFooter } from '../components/shell/site-footer'
+import { SiteFooterSlot } from '../components/shell/site-footer-slot.client'
 import { SiteHeader } from '../components/shell/site-header'
 import { buildRootMetadata } from '../lib/metadata'
 import '../styles/tokens.css'
@@ -73,7 +74,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <SkipLink />
         <SiteHeader />
         <div className="site-content">{children}</div>
-        <SiteFooter />
+        <SiteFooterSlot>
+          <SiteFooter />
+        </SiteFooterSlot>
       </body>
     </html>
   )

@@ -2,7 +2,7 @@ import { cleanup, render, screen } from '@testing-library/react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 import HomePage from '../../app/(immersive)/page'
-import { ecosystems, projects } from '../../content/catalog'
+import { projects } from '../../content/catalog'
 
 function installReducedMotion(reducedMotion: boolean) {
   Object.defineProperty(window, 'matchMedia', {
@@ -54,29 +54,25 @@ describe('ConstellationFacade', () => {
     }
   })
 
-  it('keeps four project and two ecosystem hrefs in semantic and noscript fallbacks', () => {
+  it('exposes four project hrefs through the server-rendered index', () => {
     const { container } = render(<HomePage />)
-    const navigation = container.querySelector(
-      'nav[aria-label="Constellation project and ecosystem links"]',
-    )
-    const links = navigation?.querySelectorAll('a') ?? []
+    const index = container.querySelector('nav[aria-label="Project index"]')
     const markup = renderToStaticMarkup(<HomePage />)
 
-    expect(navigation).not.toBeNull()
-    expect(links).toHaveLength(6)
-    expect(markup).toContain('<noscript>')
+    expect(index).not.toBeNull()
+    expect(index?.querySelectorAll('a')).toHaveLength(4)
+    // 索引条本身就是可见的语义化导航，sr-only 与 noscript 备用链接不再需要
+    expect(
+      container.querySelector(
+        'nav[aria-label="Constellation project and ecosystem links"]',
+      ),
+    ).toBeNull()
+    expect(markup).not.toContain('<noscript>')
 
     for (const project of projects) {
       const href = `/${project.ecosystem}/${project.slug}`
 
-      expect(navigation?.querySelector(`a[href="${href}"]`)).not.toBeNull()
-      expect(markup).toContain(`href="${href}"`)
-    }
-
-    for (const ecosystem of ecosystems) {
-      const href = `/${ecosystem.slug}`
-
-      expect(navigation?.querySelector(`a[href="${href}"]`)).not.toBeNull()
+      expect(index?.querySelector(`a[href="${href}"]`)).not.toBeNull()
       expect(markup).toContain(`href="${href}"`)
     }
   })

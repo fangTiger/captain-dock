@@ -8,10 +8,6 @@ import {
   RESPONSIVENESS,
   SENSITIVITY,
 } from '../../lib/constellation-motion'
-import {
-  ConstellationNoScriptLinks,
-  ConstellationSemanticLinks,
-} from './constellation-links'
 import styles from './constellation-facade.module.css'
 
 type ConstellationFacadeProps = Readonly<{
@@ -193,19 +189,6 @@ export function ConstellationFacade({
             {projects.length} works · {ecosystems.length} systems · 2026
           </p>
         </div>
-      </div>
-
-      <div className={styles.semanticLinks}>
-        <ConstellationSemanticLinks
-          ecosystems={ecosystems}
-          projects={projects}
-        />
-      </div>
-      <div className={styles.noScriptLinks}>
-        <ConstellationNoScriptLinks
-          ecosystems={ecosystems}
-          projects={projects}
-        />
       </div>
 
       <div
