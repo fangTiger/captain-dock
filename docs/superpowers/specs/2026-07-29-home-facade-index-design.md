@@ -36,7 +36,7 @@ main.homePage  (block-size: calc(100svh - 5rem)，固定高，非 min-height)
 └─ 索引条   auto              ← 四列项目索引
 ```
 
-因为总高固定，索引条必须有高度上限，否则长 tagline 换行会挤压甚至挤爆星场区。约束：索引条 `max-block-size: 22svh`（移动端 2×2 网格下 `28svh`），tagline 用两行截断（`-webkit-line-clamp: 2`）。星场区用 `minmax(0, 1fr)` 而非 `1fr`，确保它可以被压缩而不撑破容器。
+因为总高固定，索引条必须有高度上限，否则长 statement 换行会挤压甚至挤爆星场区。约束：索引条 `max-block-size: 22svh`（移动端 2×2 网格下 `28svh`），statement 用两行截断（`-webkit-line-clamp: 2`）。星场区用 `minmax(0, 1fr)` 而非 `1fr`，确保它可以被压缩而不撑破容器。
 
 manifesto 与 meta 定位在星场区内，距区块下边缘 `clamp(2rem, 6vh, 4rem)`、距左边缘 `max(1rem, var(--page-gutter))`——不再使用 `align-items: flex-end` 贴边。
 
@@ -50,13 +50,22 @@ manifesto 与 meta 定位在星场区内，距区块下边缘 `clamp(2rem, 6vh, 
 
 新增 `src/components/constellation/constellation-index.tsx`，服务端组件，从 `src/content/catalog.ts` 读取数据，渲染 4 个 `<a href="/[ecosystem]/[project]">`。
 
-每列内容：项目名 / tagline / `生态 · 状态`。
+每列内容：项目名 / **statement** / `生态 · 状态`。
 
-配色沿用现有生态色：Arc 冷蓝（`#7fb0ff` 系），Rialo 琥珀（`#ffbe78` 系）。
+用 `statement` 而非 `tagline`。`src/content/types.ts:65-66` 对这两个字段的定义是：`statement` 是「星座节点与首页使用的一句话判断语」，`tagline` 是「详情页与项目卡片使用的描述性副标题」。数据模型早已为首页留好了这个位置：
+
+| 项目 | statement |
+|---|---|
+| SIGNAL/LEDGER | Every autonomous action leaves a receipt worth trusting. |
+| HADRON | Issue the asset. Watch the market find its price. |
+| ArcPredict | Uncertainty becomes a market before it becomes a decision. |
+| Rialo Captain | Disruption becomes evidence, settlement, and a clear next move. |
+
+配色沿用 `constellation-model.ts:15-19` 的 `CONSTELLATION_PALETTE`：Arc `#7fb0ff`，Rialo `#e7a94b`。
 
 ### 移动端形态
 
-`max-width: 42rem` 下索引条改为 **2×2 网格**，每格只保留项目名 + `生态 · 状态`，tagline 隐藏。这样在 667px 高的 iPhone SE 上仍能保住零滚动，且 4 个作品名一眼看完。
+`max-width: 42rem` 下索引条改为 **2×2 网格**，每格只保留项目名 + `生态 · 状态`，statement 隐藏。这样在 667px 高的 iPhone SE 上仍能保住零滚动，且 4 个作品名一眼看完。
 
 ## 联动机制
 
@@ -108,7 +117,7 @@ manifesto 与 meta 定位在星场区内，距区块下边缘 `clamp(2rem, 6vh, 
 
 ## 新增测试
 
-- 单元：索引条渲染 4 个链接、`href` 正确、`data-scene-target` 值合法、生态配色分组正确。
+- 单元：索引条渲染 4 个链接、`href` 正确、`data-scene-target` 值合法、生态配色分组正确、渲染的是 `statement` 而非 `tagline`。
 - 单元：`constellation-facade.test.tsx` 中与「门面不显示作品名」相关的断言需随新方向调整。
 - e2e：首页零滚动断言（`document.documentElement.scrollHeight <= window.innerHeight`），桌面与 375×900、375×667 两档移动视口各验证一次。
 - e2e：索引条悬停触发星场高亮；星场节点点击进入详情页。
