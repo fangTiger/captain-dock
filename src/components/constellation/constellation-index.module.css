@@ -1,0 +1,93 @@
+.index {
+  border-block-start: 1px solid rgba(127, 176, 255, 0.16);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  max-block-size: 22svh;
+  position: relative;
+  z-index: 2;
+}
+
+.entry {
+  align-content: start;
+  border-inline-end: 1px solid rgba(127, 176, 255, 0.1);
+  color: inherit;
+  display: grid;
+  gap: 0.5rem;
+  padding: clamp(0.85rem, 1.6vh, 1.15rem) clamp(0.9rem, 1.6vw, 1.25rem);
+  text-decoration: none;
+  transition: background-color 180ms ease-out;
+}
+
+.entry:last-child {
+  border-inline-end: 0;
+}
+
+.entry:hover,
+.entry:focus-visible {
+  background-color: rgba(127, 176, 255, 0.08);
+}
+
+.entry[data-ecosystem="rialo"]:hover,
+.entry[data-ecosystem="rialo"]:focus-visible {
+  background-color: rgba(231, 169, 75, 0.08);
+}
+
+.name {
+  color: #dceaff;
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 0.82vw, 0.86rem);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.entry[data-ecosystem="rialo"] .name {
+  color: #ffe6c8;
+}
+
+.statement {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: rgba(220, 234, 255, 0.5);
+  display: -webkit-box;
+  font-size: clamp(0.68rem, 0.72vw, 0.78rem);
+  line-height: 1.4;
+  overflow: hidden;
+}
+
+.meta {
+  color: #7fb0ff;
+  font-family: var(--font-mono);
+  font-size: clamp(0.6rem, 0.6vw, 0.68rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.entry[data-ecosystem="rialo"] .meta {
+  color: #e7a94b;
+}
+
+/* 移动端：2×2 网格，statement 让位保住零滚动 */
+@media (max-width: 42rem) {
+  .index {
+    grid-template-columns: repeat(2, 1fr);
+    max-block-size: 28svh;
+  }
+
+  .entry:nth-child(2n) {
+    border-inline-end: 0;
+  }
+
+  .entry:nth-child(-n + 2) {
+    border-block-end: 1px solid rgba(127, 176, 255, 0.1);
+  }
+
+  .statement {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entry {
+    transition: none;
+  }
+}
