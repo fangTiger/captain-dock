@@ -1,7 +1,15 @@
 'use client'
 
 import { useLayoutEffect, useMemo, useRef } from 'react'
-import { AdditiveBlending, Color, type InstancedMesh } from 'three'
+import {
+  AddEquation,
+  Color,
+  CustomBlending,
+  OneFactor,
+  SrcAlphaFactor,
+  ZeroFactor,
+  type InstancedMesh,
+} from 'three'
 
 import type { ProgrammaticSceneProps } from '../scene/scene-router.client'
 import { createInstanceMatrices } from '../scene/scene-primitives'
@@ -13,6 +21,29 @@ import {
   createConstellationWebPositions,
   getConstellationNodesForEcosystem,
 } from './constellation-model'
+
+// 星场对页面只做「加光」，不遮挡其背后的背景。
+//
+// three.js 的 AdditiveBlending 用 gl.blendFunc(SRC_ALPHA, ONE)，该设置同时
+// 作用于 alpha 通道（A = src.a² + dst.a），会持续累积画布 alpha。渲染器以
+// alpha: true 创建，浏览器按 result = canvasRGB + pageBG × (1 − a) 合成，
+// 累积的 alpha 会按比例削弱 globals.css 中页面自身的径向渐变。
+//
+// 改为 CustomBlending：RGB 保持加法，alpha 恒取 dst（A = 0 × src.a + 1 × dst.a），
+// 画布 alpha 始终为 0，合成退化为纯加法。
+//
+// 注：实测该削弱幅度有限（峰值 alpha ≈ 0.38、中位 ≈ 0.06），并非节点观感问题
+// 的主因——主因是此前 vertexColors 缺陷把节点颜色归零（见 faccdf0）。此处属
+// 正确性改进，代价为零。
+const ADDITIVE_KEEP_DST_ALPHA = {
+  blending: CustomBlending,
+  blendEquation: AddEquation,
+  blendSrc: SrcAlphaFactor,
+  blendDst: OneFactor,
+  blendEquationAlpha: AddEquation,
+  blendSrcAlpha: ZeroFactor,
+  blendDstAlpha: OneFactor,
+} as const
 
 type ConstellationFieldProps = Pick<
   ProgrammaticSceneProps,
@@ -97,7 +128,7 @@ function NodeLayer({ opacity, scale, target }: InstanceLayerProps) {
           USE_INSTANCING_COLOR；此处不能开 vertexColors，否则着色器会去读
           circleGeometry 上并不存在的 color 属性（默认值为全零）并把节点乘成纯黑。 */}
       <meshBasicMaterial
-        blending={AdditiveBlending}
+        {...ADDITIVE_KEEP_DST_ALPHA}
         color={CONSTELLATION_PALETTE.neutral}
         depthWrite={false}
         opacity={opacity}
@@ -197,7 +228,7 @@ export function ConstellationField({
           <bufferAttribute args={[stars, 3]} attach="attributes-position" />
         </bufferGeometry>
         <pointsMaterial
-          blending={AdditiveBlending}
+          {...ADDITIVE_KEEP_DST_ALPHA}
           color={CONSTELLATION_PALETTE.neutral}
           depthWrite={false}
           opacity={withVariantOpacity(quality === 'low' ? 0.75 : 0.9, variant)}
@@ -211,7 +242,7 @@ export function ConstellationField({
           <bufferAttribute args={[lines, 3]} attach="attributes-position" />
         </bufferGeometry>
         <lineBasicMaterial
-          blending={AdditiveBlending}
+          {...ADDITIVE_KEEP_DST_ALPHA}
           color={CONSTELLATION_PALETTE.arc}
           depthWrite={false}
           opacity={withVariantOpacity(0.22, variant)}
