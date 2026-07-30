@@ -950,7 +950,7 @@ test('fail closed: 3D 增量、单路由初始传输和单 scene 闭包超预算
   await expectBudgetFailure(
     async ({ buildRoot }) => {
       await writeText(path.join(buildRoot, 'static/chunks/route-fat.js'), 'import "static/chunks/canvas-owner.js";');
-      await writeBytes(path.join(buildRoot, 'static/chunks/route-fat-extra.js'), 255 * 1024);
+      await writeBytes(path.join(buildRoot, 'static/chunks/route-fat-extra.js'), 258 * 1024);
       await writeText(
         path.join(buildRoot, 'static/chunks/canvas-owner.js'),
         'CAPTAIN_DOCK_UNIVERSE_CANVAS_V1 import "static/chunks/scene-router.js"; import "static/chunks/route-fat-extra.js";',
@@ -964,13 +964,13 @@ test('fail closed: 3D 增量、单路由初始传输和单 scene 闭包超预算
   );
 });
 
-test('fail closed: shared enhanced base 加当前 scene 超过 250KiB 会报 route 预算错误', async () => {
+test('fail closed: shared enhanced base 加当前 scene 超过 256KiB 会报 route 预算错误', async () => {
   await expectBudgetFailure(
     async ({ buildRoot }) => {
       await writeNoisyText(
         path.join(buildRoot, 'static/chunks/canvas-owner.js'),
         'export const CAPTAIN_DOCK_UNIVERSE_CANVAS_V1 = "CAPTAIN_DOCK_UNIVERSE_CANVAS_V1"; import "static/chunks/scene-router.js";',
-        248 * KIB,
+        254 * KIB,
       );
       await writeNoisyText(path.join(buildRoot, 'static/chunks/home-scene.js'), 'home-constellation', 3 * KIB);
     },

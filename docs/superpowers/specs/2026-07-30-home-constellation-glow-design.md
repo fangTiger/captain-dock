@@ -155,10 +155,29 @@ medium 档是三者中最紧的一环。**这正是该档关闭星云的原因**
 
 三角面无风险：以 `planeGeometry` 精灵取代 24 段 `circleGeometry`（原为 24 × 4 实例 × 2 层 = 192 面）后总面数反而下降，远低于 `maxTriangles` 760 / 520 / 360。
 
-其余硬性门槛（均需持续满足）：
+### 7.1 体积预算的真实状况（本节曾写错，2026-07-30 已修正）
 
-- `scripts/check-budgets.mjs`：`enhanced3dGzipBytes` ≤ 260 KiB、`immersiveRoute3dGzipBytes` ≤ 250 KiB、`sceneClosureGzipBytes` ≤ 45 KiB。
+本节初稿称体积预算"均需持续满足"，**该前提是错的**：`npm run check:budgets` 在本次开工前就已失败 4 项。实测后的真实结构是：
+
+| 组成 | gzip 体积 |
+|---|---|
+| 共享基座（three.js + React Three Fiber） | ≈ 249.2 KiB |
+| 三个场景闭包合计 | 5.8 KiB（首页 2.1 / arc 1.7 / rialo 2.0） |
+| full enhanced 闭包 | 255.0 KiB |
+| 单路由闭包（基座 + 单场景） | ≈ 251.2 KiB |
+
+**路由预算的 99% 是库体积地板，应用能改坏的只有最后那几 KiB。** 原 `immersiveRoute3dGzipBytes: 250 KiB` 落在地板之下，与代码是否变胖无关，结构上不可达成。
+
+已在开工前以两个独立提交修复（见第 11 节），并把该阈值按「地板 + 单场景余量」重新标定为 **256 KiB**。关键约束：路由闭包是完整增强闭包的子集，故必须始终满足 `immersiveRoute3dGzipBytes < enhanced3dGzipBytes`，否则增强门禁会先失败、路由阈值成为死规则——这也是最初拟定的 264 KiB 被否决的原因。
+
+当前门禁状态（全绿）：
+
+- `check:budgets`：full enhanced 255.0/260 KiB，三条路由 251.2 / 250.8 / 251.2 均低于 256 KiB，场景闭包均远低于 45 KiB。
+- `test:build-gates`：45 项全过。
+- `check:links`：112 个链接全过。
 - `lighthouserc.json`：performance ≥ 0.90（三次取中位）、LCP ≤ 2500ms、CLS ≤ 0.1、accessibility ≥ 0.95。
+
+**对本设计的直接约束：** 路由余量约 4.8 KiB，增强余量约 5.0 KiB。贴图为运行时 `DataTexture` 生成、不占网络体积，新增代码主要是 GLSL 字符串与生成函数（gzip 友好），预算内可行；但**每完成一个实现步骤都须复跑 `check:budgets` 并记录数字**，一旦增强闭包逼近 260 KiB，需带实测数据重新讨论阈值，不得静默放水。
 
 已实测确认：动画本身不是新增成本类别——当前 `frameloop` 为 `demand` 但每帧持续 `invalidate`，软件渲染下约 34fps，即已在持续渲染。
 
@@ -191,9 +210,18 @@ medium 档是三者中最紧的一环。**这正是该档关闭星云的原因**
 8. 分档接线 + 测试契约更新 + 预算与 Lighthouse 复跑。
 9. OpenSpec delta 更新 + `openspec/specs/` 补齐。
 
-### 已识别的顺带问题（不在本次范围，仅记录）
+## 11. 开工前已完成的清理（独立提交）
 
-- `src/components/scene/scenes/home-astrolabe.tsx` 是死代码（无任何模块导入；`scene-router.client.tsx` 导入的是 `home-constellation`，仅变量名叫 `HomeAstrolabe`），且带有与本次相同的 `vertexColors` 缺陷。
-- `scripts/check-budgets.mjs` 中 `ROUTE_SCENE_SENTINELS` 把 `/` 映射到 `home-astrolabe`，与实际场景模块名 `home-constellation` 不一致，该哨兵可能已失效。
+视觉改动动工前，先把门禁修绿、把地基清干净，使后续每一步的体积影响都能被干净地量出来、不与既有欠债混淆。以下均为独立提交，与视觉改动无关：
 
-上述两条建议单独处理，因其与视觉改动无关，混入会模糊本次变更的边界。
+| 提交 | 内容 |
+|---|---|
+| `faccdf0` | `fix:` 节点纯黑圆盘的根因修复 + `vertexColors` AST 不变量（见第 2 节） |
+| `7cb773b` | `chore:` 删除 3 个不可达死模块 |
+| （本次） | `fix:` 预算哨兵修正 + 阈值重新标定 + 移除两个未使用依赖 |
+
+**死代码清理**：以从 `src/app` 入口与全部测试出发的模块可达性遍历确认，110 个模块中仅 3 个不可达，已全部删除——`scenes/home-astrolabe.tsx`（首页实际场景是 `home-constellation`，`scene-router` 只是把变量名叫作 `HomeAstrolabe`，极易误认；该文件还带有同一个 `vertexColors` 缺陷）、`ecosystem/ecosystem-hero.tsx`、`ecosystem/ecosystem-index.tsx`（门面重设计后职责由 `constellation-index` 承担）。同步从 `english-surface.test.ts` 的 `publicSurfaceSources` 移除已删文件。
+
+**预算哨兵修正**：`check-budgets.mjs` 把 `/` 的场景哨兵写作 `home-astrolabe`，产物中并不存在该字符串，导致 `SCENE_SENTINEL_MISSING`。连带影响更大：哨兵解析不到 owner 时 `sceneOwnerFiles` 缺少首页场景 chunk，`closureUntil` 不再在该处截断，首页场景代码遂漏进 `sharedEnhancedBase` 并被重复计入另外两条路由。修正后 `/arc` 由 252.9 降至 250.8 KiB、`/rialo` 由 253.2 降至 251.2 KiB。三处哨兵定义（`check-budgets.mjs`、`build-gates.test.mjs` 夹具、`performance.spec.ts` 的 `enhancedOnlySentinels`）已统一。
+
+**移除未使用依赖**：`@react-three/drei` 与 `motion` 从未被任何源码、测试或配置引用（原提案称"复用已安装的 three、fiber、drei、motion"，但后两者从未落地）。二者本就未进产物，删除**不影响**体积，收益在于减少安装体积与供应链面。本设计亦不需要它们：贴图走 `DataTexture`、闪烁走自定义 `ShaderMaterial`。

@@ -19,9 +19,21 @@ const ROUTE_DOM_SCENES = new Map([
 ]);
 const IMAGE_EXTENSIONS = new Set(['.avif', '.gif', '.jpeg', '.jpg', '.png', '.svg', '.webp']);
 
+// 阈值构成说明（2026-07-30 实测标定）：
+//
+// three.js + React Three Fiber 的共享基座约 249KiB（gzip），这是应用代码
+// 无法影响的地板；三个场景闭包合计仅 5.8KiB（首页 2.1 / arc 1.7 / rialo 2.0）。
+// 换言之路由预算的 99% 是库体积，能被回归改坏的只有最后那几 KiB。
+//
+// 因此 immersiveRoute3dGzipBytes 按「地板 + 单场景余量」标定：249 + 约 7 = 256。
+// 原值 250 落在地板之下，结构上不可达成，与代码是否变胖无关。
+//
+// 约束：路由闭包（基座 + 单个场景）是完整增强闭包的子集，故必须始终满足
+// immersiveRoute3dGzipBytes < enhanced3dGzipBytes，否则增强门禁会先失败、
+// 路由阈值永不生效，成为死规则。
 const THRESHOLDS = {
   enhanced3dGzipBytes: 260 * KIB,
-  immersiveRoute3dGzipBytes: 250 * KIB,
+  immersiveRoute3dGzipBytes: 256 * KIB,
   sceneClosureGzipBytes: 45 * KIB,
   localProjectImageBytes: 300 * KIB,
 };
