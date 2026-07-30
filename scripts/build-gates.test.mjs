@@ -22,7 +22,7 @@ const ROUTE_DOM_SCENES = new Map([
   ['/rialo', 'rialo'],
 ]);
 const ROUTE_SCENE_SENTINELS = new Map([
-  ['/', 'home-astrolabe'],
+  ['/', 'home-constellation'],
   ['/arc', 'arc-orbital-circuit'],
   ['/rialo', 'rialo-reactive-field'],
 ]);
@@ -208,7 +208,7 @@ async function makeFixture() {
       'static/chunks/scene-router.js',
       'import "static/chunks/home-scene.js"; import "static/chunks/arc-scene.js"; import "static/chunks/rialo-scene.js";',
     ],
-    ['static/chunks/home-scene.js', 'export const scene = "home-astrolabe";'],
+    ['static/chunks/home-scene.js', 'export const scene = "home-constellation";'],
     ['static/chunks/arc-scene.js', 'export const scene = "arc-orbital-circuit";'],
     ['static/chunks/rialo-scene.js', 'export const scene = "rialo-reactive-field";'],
     ['static/chunks/about.js', '/* cold about */'],
@@ -925,12 +925,12 @@ test('fail closed: scene sentinel 缺失、重复 owner 或 owner 不独立会�
     /SCENE_SENTINEL_MISSING/,
   );
   await expectBudgetFailure(
-    ({ buildRoot }) => writeText(path.join(buildRoot, 'static/chunks/duplicate-scene.js'), 'home-astrolabe'),
+    ({ buildRoot }) => writeText(path.join(buildRoot, 'static/chunks/duplicate-scene.js'), 'home-constellation'),
     /SCENE_SENTINEL_DUPLICATE/,
   );
   await expectBudgetFailure(
     async ({ buildRoot }) => {
-      await writeText(path.join(buildRoot, 'static/chunks/home-scene.js'), 'home-astrolabe arc-orbital-circuit');
+      await writeText(path.join(buildRoot, 'static/chunks/home-scene.js'), 'home-constellation arc-orbital-circuit');
       await writeText(path.join(buildRoot, 'static/chunks/arc-scene.js'), '/* moved */');
     },
     /SCENE_SENTINEL_OWNER_NOT_DISTINCT/,
@@ -959,7 +959,7 @@ test('fail closed: 3D 增量、单路由初始传输和单 scene 闭包超预算
     /BUDGET_ROUTE_3D_EXCEEDED/,
   );
   await expectBudgetFailure(
-    ({ buildRoot }) => writeNoisyText(path.join(buildRoot, 'static/chunks/home-scene.js'), 'home-astrolabe', 50 * 1024),
+    ({ buildRoot }) => writeNoisyText(path.join(buildRoot, 'static/chunks/home-scene.js'), 'home-constellation', 50 * 1024),
     /BUDGET_SCENE_EXCEEDED/,
   );
 });
@@ -972,7 +972,7 @@ test('fail closed: shared enhanced base 加当前 scene 超过 250KiB 会报 rou
         'export const CAPTAIN_DOCK_UNIVERSE_CANVAS_V1 = "CAPTAIN_DOCK_UNIVERSE_CANVAS_V1"; import "static/chunks/scene-router.js";',
         248 * KIB,
       );
-      await writeNoisyText(path.join(buildRoot, 'static/chunks/home-scene.js'), 'home-astrolabe', 3 * KIB);
+      await writeNoisyText(path.join(buildRoot, 'static/chunks/home-scene.js'), 'home-constellation', 3 * KIB);
     },
     /BUDGET_ROUTE_3D_EXCEEDED/,
   );

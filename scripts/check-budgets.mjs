@@ -6,9 +6,9 @@ import { JSDOM } from 'jsdom';
 
 const KIB = 1024;
 const CANVAS_SENTINEL = 'CAPTAIN_DOCK_UNIVERSE_CANVAS_V1';
-const SCENE_SENTINELS = ['home-astrolabe', 'arc-orbital-circuit', 'rialo-reactive-field'];
+const SCENE_SENTINELS = ['home-constellation', 'arc-orbital-circuit', 'rialo-reactive-field'];
 const ROUTE_SCENE_SENTINELS = new Map([
-  ['/', 'home-astrolabe'],
+  ['/', 'home-constellation'],
   ['/arc', 'arc-orbital-circuit'],
   ['/rialo', 'rialo-reactive-field'],
 ]);

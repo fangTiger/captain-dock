@@ -28,7 +28,7 @@ const coldRoutes = [
 ] as const
 const enhancedOnlySentinels = [
   'CAPTAIN_DOCK_UNIVERSE_CANVAS_V1',
-  'home-astrolabe',
+  'home-constellation',
   'arc-orbital-circuit',
   'rialo-reactive-field',
 ] as const
