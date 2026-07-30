@@ -13,8 +13,6 @@ const publicSurfaceSources = [
   'src/app/(immersive)/page.tsx',
   'src/app/(immersive)/[ecosystem]/page.tsx',
   'src/app/(content)/about/page.tsx',
-  'src/components/ecosystem/ecosystem-hero.tsx',
-  'src/components/ecosystem/ecosystem-index.tsx',
   'src/components/rialo/rialo-reactive-loop.tsx',
   'src/components/seo/json-ld.tsx',
   'src/components/shell/site-header.tsx',
