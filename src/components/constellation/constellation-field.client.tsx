@@ -20,7 +20,15 @@ import {
   CONSTELLATION_PALETTE,
   createConstellationLinePositions,
 } from './constellation-model'
-import { getNodeGlowTexture, getNodeStreakTexture } from './constellation-textures'
+import {
+  getNebulaTexture,
+  getNodeGlowTexture,
+  getNodeStreakTexture,
+} from './constellation-textures'
+import {
+  NEBULA_OPACITY,
+  getNebulaCloudsForQuality,
+} from './constellation-nebula'
 import {
   STARFIELD_BOUNDS,
   STAR_LAYER_FRAGMENT_SHADER,
@@ -74,6 +82,80 @@ type ConstellationFieldProps = Pick<
   'quality' | 'target' | 'variant'
 > & {
   starUniformsRef?: React.MutableRefObject<readonly StarLayerUniforms[] | null>
+  // 星云只有 3 个实例，矩阵由驱动方逐帧写入即可，无需为它单独写实例化着色器。
+  nebulaRef?: React.RefObject<InstancedMesh | null>
+}
+
+function NebulaLayer({
+  meshRef,
+  quality,
+  variant,
+}: Readonly<{
+  meshRef: ConstellationFieldProps['nebulaRef']
+  quality: ProgrammaticSceneProps['quality']
+  variant: ProgrammaticSceneProps['variant']
+}>) {
+  const localRef = useRef<InstancedMesh>(null)
+  const clouds = useMemo(() => getNebulaCloudsForQuality(quality), [quality])
+  const matrices = useMemo(
+    () =>
+      createInstanceMatrices(
+        clouds.map((cloud) => ({
+          position: cloud.position,
+          rotationZ: 0,
+          scale: [cloud.scale[0], cloud.scale[1], 1],
+        })),
+      ),
+    [clouds],
+  )
+
+  useLayoutEffect(() => {
+    const mesh = localRef.current
+
+    if (!mesh || clouds.length === 0) {
+      return
+    }
+
+    mesh.instanceMatrix.array.set(matrices)
+    clouds.forEach((cloud, index) => {
+      mesh.setColorAt(index, new Color(cloud.color))
+    })
+    mesh.instanceMatrix.needsUpdate = true
+
+    if (mesh.instanceColor) {
+      mesh.instanceColor.needsUpdate = true
+    }
+  }, [clouds, matrices])
+
+  useLayoutEffect(() => {
+    if (!meshRef) {
+      return undefined
+    }
+
+    meshRef.current = localRef.current
+
+    return () => {
+      meshRef.current = null
+    }
+  }, [clouds, meshRef])
+
+  if (clouds.length === 0) {
+    return null
+  }
+
+  return (
+    <instancedMesh args={[undefined, undefined, clouds.length]} ref={localRef}>
+      <planeGeometry args={[1, 1]} />
+      <meshBasicMaterial
+        {...ADDITIVE_KEEP_DST_ALPHA}
+        map={getNebulaTexture()}
+        color={CONSTELLATION_PALETTE.neutral}
+        depthWrite={false}
+        opacity={withVariantOpacity(NEBULA_OPACITY, variant)}
+        transparent
+      />
+    </instancedMesh>
+  )
 }
 
 type NodeSpriteLayerProps = Readonly<{
@@ -183,6 +265,7 @@ function NodeSpriteLayer({ opacity, scale, target, texture }: NodeSpriteLayerPro
 }
 
 export function ConstellationField({
+  nebulaRef,
   quality,
   starUniformsRef,
   target,
@@ -227,6 +310,7 @@ export function ConstellationField({
     <group
       name={`constellation-palette-${CONSTELLATION_PALETTE.arc}-${CONSTELLATION_PALETTE.rialo}`}
     >
+      <NebulaLayer meshRef={nebulaRef} quality={quality} variant={variant} />
       {starLayers.map((layer, index) => (
         <points key={layer.id}>
           <bufferGeometry>

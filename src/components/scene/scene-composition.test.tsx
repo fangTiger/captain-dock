@@ -1017,7 +1017,7 @@ describe('scene router composition entries', () => {
     expect(profileDelta(rialoTrigger)).toBeGreaterThan(profileDelta(rialoCover) * 1.25)
   })
 
-  it('keeps the home facade unnamed and within its six-draw constellation budget', () => {
+  it('keeps the home facade unnamed and within its seven-draw constellation budget', () => {
     const consoleError = silenceR3fDomWarnings()
 
     try {
@@ -1025,7 +1025,7 @@ describe('scene router composition entries', () => {
         <ConstellationField quality="high" target={null} variant="current" />,
       )
 
-      expect(countDrawBearingTags(markup)).toBe(6)
+      expect(countDrawBearingTags(markup)).toBe(7)
       expect(markup).toContain('#7fb0ff')
       expect(markup).toContain('#e7a94b')
 

@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import type { Group } from 'three'
+import { Matrix4, type Group, type InstancedMesh } from 'three'
 
 import {
   ConstellationField,
@@ -15,6 +15,10 @@ import {
   useConstellationPointerTracking,
 } from '../../constellation/constellation-motion.client'
 import {
+  NEBULA_CLOUDS,
+  getNebulaOffset,
+} from '../../constellation/constellation-nebula'
+import {
   useFiniteSceneMorphGroup,
   type SpatialSceneMorphProfile,
 } from '../finite-scene-morph'
@@ -23,6 +27,10 @@ import type { ProgrammaticSceneProps } from '../scene-router.client'
 // 指针视差的世界单位行程；逐层再乘以各自的 parallax 系数。
 const POINTER_TRAVEL_X = 0.42
 const POINTER_TRAVEL_Y = 0.26
+
+// 相机缓推：周期 2π/0.05 ≈ 125 秒，摆幅 0.35 世界单位。
+const DOLLY_FREQUENCY = 0.05
+const DOLLY_AMPLITUDE = 0.35
 
 const defaultHomeConstellationMorphProfile: SpatialSceneMorphProfile = {
   positionX: 0,
@@ -105,6 +113,10 @@ export default function HomeConstellation({
 }: ProgrammaticSceneProps) {
   const sceneRef = useRef<Group>(null)
   const starUniformsRef = useRef<readonly StarLayerUniforms[] | null>(null)
+  const dollyRef = useRef<Group>(null)
+  const nebulaRef = useRef<InstancedMesh | null>(null)
+  // 复用同一个 Matrix4，避免每帧为 3 个云团反复分配
+  const nebulaMatrix = useRef(new Matrix4())
   const elapsedRef = useRef(0)
   const pointerRef = useRef({
     x: 0,
@@ -160,17 +172,53 @@ export default function HomeConstellation({
       )
     }
 
+    // 星云沿各自的利萨如路径缓慢漂移；仅 3 个实例，逐帧写矩阵的开销可忽略。
+    const nebula = nebulaRef.current
+
+    if (nebula) {
+      const matrix = nebulaMatrix.current
+
+      NEBULA_CLOUDS.forEach((cloud, index) => {
+        const [offsetX, offsetY] = getNebulaOffset(cloud, elapsedRef.current)
+
+        matrix.makeScale(cloud.scale[0], cloud.scale[1], 1)
+        matrix.setPosition(
+          cloud.position[0] + offsetX,
+          cloud.position[1] + offsetY,
+          cloud.position[2],
+        )
+        nebula.setMatrixAt(index, matrix)
+      })
+
+      nebula.instanceMatrix.needsUpdate = true
+    }
+
+    // 相机缓推：极慢的正弦呼吸，周期约 125 秒。
+    // 刻意不用循环缩放——循环到头复位会产生可见跳变，正弦则永不复位。
+    //
+    // 必须作用在独立的一层 group 上：sceneRef 由 useFiniteSceneMorphGroup 接管，
+    // 其 applySpatialChannels 会整体写 position.set(x, y, impact * 0.18)，
+    // 在同一个 group 上写 z 会被形变逐帧覆盖。group 不产生 draw call。
+    const dolly = dollyRef.current
+
+    if (dolly && quality !== 'low') {
+      dolly.position.z = Math.sin(elapsedRef.current * DOLLY_FREQUENCY) * DOLLY_AMPLITUDE
+    }
+
     requestFrame()
   })
 
   return (
     <group name="home-constellation" ref={sceneRef}>
-      <ConstellationField
-        quality={quality}
-        starUniformsRef={starUniformsRef}
-        target={target}
-        variant={variant}
-      />
+      <group ref={dollyRef}>
+        <ConstellationField
+          nebulaRef={nebulaRef}
+          quality={quality}
+          starUniformsRef={starUniformsRef}
+          target={target}
+          variant={variant}
+        />
+      </group>
     </group>
   )
 }

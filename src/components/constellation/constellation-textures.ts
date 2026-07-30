@@ -14,6 +14,7 @@ import {
 const GLOW_SIZE = 64
 const STREAK_WIDTH = 256
 const STREAK_HEIGHT = 32
+const NEBULA_SIZE = 128
 
 function createMaskTexture(
   width: number,
@@ -74,8 +75,21 @@ function streakAlpha(u: number, v: number) {
   return horizontal * vertical
 }
 
+// 星云：比节点辉光柔和得多的大范围衰减。指数取 2.5 让中心也不出现硬核，
+// 整体只作为极淡的氛围底噪，实际透明度由材质 opacity 压到 0.06~0.09。
+function nebulaAlpha(u: number, v: number) {
+  const r = Math.hypot(u, v)
+
+  if (r >= 1) {
+    return 0
+  }
+
+  return Math.pow(1 - r, 2.5)
+}
+
 let glowTexture: DataTexture | null = null
 let streakTexture: DataTexture | null = null
+let nebulaTexture: DataTexture | null = null
 
 // 惰性单例：贴图与场景实例无关，避免场景重挂载时反复生成与上传。
 export function getNodeGlowTexture() {
@@ -90,20 +104,30 @@ export function getNodeStreakTexture() {
   return streakTexture
 }
 
+export function getNebulaTexture() {
+  nebulaTexture ??= createMaskTexture(NEBULA_SIZE, NEBULA_SIZE, nebulaAlpha)
+
+  return nebulaTexture
+}
+
 // 仅供测试使用，避免用例之间互相污染单例。
 export function resetNodeTexturesForTest() {
   glowTexture?.dispose()
   streakTexture?.dispose()
+  nebulaTexture?.dispose()
   glowTexture = null
   streakTexture = null
+  nebulaTexture = null
 }
 
 export const NODE_TEXTURE_SHAPES = {
   glow: { width: GLOW_SIZE, height: GLOW_SIZE },
   streak: { width: STREAK_WIDTH, height: STREAK_HEIGHT },
+  nebula: { width: NEBULA_SIZE, height: NEBULA_SIZE },
 } as const
 
 export const nodeTextureAlphaForTest = {
   glow: glowAlpha,
   streak: streakAlpha,
+  nebula: nebulaAlpha,
 } as const
