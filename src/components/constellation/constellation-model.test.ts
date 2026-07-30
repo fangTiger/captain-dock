@@ -5,7 +5,6 @@ import {
   CONSTELLATION_PALETTE,
   CONSTELLATION_STAR_COUNTS,
   createConstellationLinePositions,
-  createConstellationStarPositions,
   getConstellationNodesForEcosystem,
 } from './constellation-model'
 import {
@@ -47,21 +46,14 @@ describe('constellation model', () => {
     )
   })
 
-  it('creates deterministic, finite quality-scaled star positions', () => {
+  // 星点生成已移入 constellation-starfield.ts 的分层实现，
+  // 确定性与取值范围由该模块的用例覆盖，此处只锁定各画质档的总数。
+  it('scales star counts per quality tier', () => {
     expect(CONSTELLATION_STAR_COUNTS).toEqual({
-      high: 340,
-      medium: 210,
-      low: 110,
+      high: 900,
+      medium: 540,
+      low: 220,
     })
-
-    for (const quality of ['high', 'medium', 'low'] as const) {
-      const first = createConstellationStarPositions(quality)
-      const second = createConstellationStarPositions(quality)
-
-      expect(first).toHaveLength(CONSTELLATION_STAR_COUNTS[quality] * 3)
-      expect(Array.from(first).every(Number.isFinite)).toBe(true)
-      expect(first).toEqual(second)
-    }
   })
 })
 

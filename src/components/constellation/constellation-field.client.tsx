@@ -7,6 +7,7 @@ import {
   CustomBlending,
   OneFactor,
   SrcAlphaFactor,
+  Vector2,
   ZeroFactor,
   type InstancedMesh,
   type Texture,
@@ -18,9 +19,14 @@ import {
   CONSTELLATION_NODES,
   CONSTELLATION_PALETTE,
   createConstellationLinePositions,
-  createConstellationStarPositions,
 } from './constellation-model'
 import { getNodeGlowTexture, getNodeStreakTexture } from './constellation-textures'
+import {
+  STARFIELD_BOUNDS,
+  STAR_LAYER_FRAGMENT_SHADER,
+  STAR_LAYER_VERTEX_SHADER,
+  getStarLayersForQuality,
+} from './constellation-starfield'
 
 // 星场对页面只做「加光」，不遮挡其背后的背景。
 //
@@ -45,10 +51,30 @@ const ADDITIVE_KEEP_DST_ALPHA = {
   blendDstAlpha: OneFactor,
 } as const
 
+// 星层 uniform 由本组件创建、经 ref 交给 HomeConstellation 的 useFrame 驱动。
+//
+// 这样 ConstellationField 保持为纯 JSX 组装、不含 useFrame，因而可以被
+// renderToStaticMarkup 直接渲染——draw call 预算测试正是依赖这一点
+// （arc / rialo 两个场景同样不含 useFrame，唯独 HomeConstellation 含有，
+// 所以测试对首页渲染的是本组件而非场景组件）。
+export type StarLayerUniforms = Readonly<{
+  uTime: { value: number }
+  uPointer: { value: Vector2 }
+  uDrift: { value: number }
+  uParallax: { value: number }
+  uSize: { value: number }
+  uScale: { value: number }
+  uBounds: { value: Vector2 }
+  uColor: { value: Color }
+  uOpacity: { value: number }
+}>
+
 type ConstellationFieldProps = Pick<
   ProgrammaticSceneProps,
   'quality' | 'target' | 'variant'
->
+> & {
+  starUniformsRef?: React.MutableRefObject<readonly StarLayerUniforms[] | null>
+}
 
 type NodeSpriteLayerProps = Readonly<{
   opacity: number
@@ -158,33 +184,66 @@ function NodeSpriteLayer({ opacity, scale, target, texture }: NodeSpriteLayerPro
 
 export function ConstellationField({
   quality,
+  starUniformsRef,
   target,
   variant,
 }: ConstellationFieldProps) {
-  const stars = useMemo(() => createConstellationStarPositions(quality), [quality])
+  const starLayers = useMemo(() => getStarLayersForQuality(quality), [quality])
   // 连线只来自 CONSTELLATION_EDGES，即四个作品之间的真实星座关系。
   // 原先还会把彼此靠近的随机星点两两相连，那是 particles.js 式的点线网，
   // 廉价联想极强，已随本次重设计移除。
   const lines = useMemo(() => createConstellationLinePositions(), [])
+  const starUniforms = useMemo(
+    () =>
+      starLayers.map((layer) => ({
+        uTime: { value: 0 },
+        uPointer: { value: new Vector2() },
+        uDrift: { value: layer.drift },
+        uParallax: { value: layer.parallax },
+        uSize: { value: layer.size },
+        // 与 three 的 sizeAttenuation 一致，取画布高度的一半；
+        // 真实值由驱动方每帧写入，这里只给一个合理初值避免首帧尺寸突变。
+        uScale: { value: 450 },
+        uBounds: { value: new Vector2(STARFIELD_BOUNDS.x, STARFIELD_BOUNDS.y) },
+        uColor: { value: new Color(CONSTELLATION_PALETTE.neutral) },
+        uOpacity: { value: withVariantOpacity(layer.opacity, variant) },
+      })),
+    [starLayers, variant],
+  )
+
+  useLayoutEffect(() => {
+    if (!starUniformsRef) {
+      return undefined
+    }
+
+    starUniformsRef.current = starUniforms
+
+    return () => {
+      starUniformsRef.current = null
+    }
+  }, [starUniforms, starUniformsRef])
 
   return (
     <group
       name={`constellation-palette-${CONSTELLATION_PALETTE.arc}-${CONSTELLATION_PALETTE.rialo}`}
     >
-      <points>
-        <bufferGeometry>
-          <bufferAttribute args={[stars, 3]} attach="attributes-position" />
-        </bufferGeometry>
-        <pointsMaterial
-          {...ADDITIVE_KEEP_DST_ALPHA}
-          color={CONSTELLATION_PALETTE.neutral}
-          depthWrite={false}
-          opacity={withVariantOpacity(quality === 'low' ? 0.75 : 0.9, variant)}
-          size={quality === 'high' ? 0.032 : 0.04}
-          sizeAttenuation
-          transparent
-        />
-      </points>
+      {starLayers.map((layer, index) => (
+        <points key={layer.id}>
+          <bufferGeometry>
+            <bufferAttribute args={[layer.attributes.positions, 3]} attach="attributes-position" />
+            <bufferAttribute args={[layer.attributes.phases, 1]} attach="attributes-aPhase" />
+            <bufferAttribute args={[layer.attributes.rates, 1]} attach="attributes-aRate" />
+          </bufferGeometry>
+          <shaderMaterial
+            {...ADDITIVE_KEEP_DST_ALPHA}
+            depthWrite={false}
+            fragmentShader={STAR_LAYER_FRAGMENT_SHADER}
+            transparent
+            uniforms={starUniforms[index]}
+            vertexShader={STAR_LAYER_VERTEX_SHADER}
+          />
+        </points>
+      ))}
       <lineSegments>
         <bufferGeometry>
           <bufferAttribute args={[lines, 3]} attach="attributes-position" />

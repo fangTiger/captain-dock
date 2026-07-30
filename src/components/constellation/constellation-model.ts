@@ -60,10 +60,13 @@ export const CONSTELLATION_EDGES = [
   },
 ] as const satisfies readonly ConstellationEdge[]
 
+// 分层视差需要比原先单层更高的密度才撑得起纵深：星点拆到三层后，
+// 每层各自只占总数的一半、约三分之一与不到五分之一。
+// 点图元极廉价——三层合计仍只占 3 个 draw call，2~3 像素的点填充率可忽略。
 export const CONSTELLATION_STAR_COUNTS = {
-  high: 340,
-  medium: 210,
-  low: 110,
+  high: 900,
+  medium: 540,
+  low: 220,
 } as const satisfies Record<EnhancedSceneQuality, number>
 
 const nodesByProject = new Map<ProjectSlug, ConstellationNode>(
@@ -88,29 +91,6 @@ export function createConstellationLinePositions() {
     positions.set(from.position, edgeIndex * 6)
     positions.set(to.position, edgeIndex * 6 + 3)
   })
-
-  return positions
-}
-
-function nextSeed(seed: number) {
-  return (Math.imul(seed, 1_664_525) + 1_013_904_223) >>> 0
-}
-
-export function createConstellationStarPositions(quality: EnhancedSceneQuality) {
-  const count = CONSTELLATION_STAR_COUNTS[quality]
-  const positions = new Float32Array(count * 3)
-  let seed = quality === 'high' ? 0xc0ffee : quality === 'medium' ? 0x7fb0ff : 0xe7a94b
-
-  for (let index = 0; index < count; index += 1) {
-    const offset = index * 3
-
-    seed = nextSeed(seed)
-    positions[offset] = (seed / 0x1_0000_0000 - 0.5) * 10.4
-    seed = nextSeed(seed)
-    positions[offset + 1] = (seed / 0x1_0000_0000 - 0.5) * 6.4
-    seed = nextSeed(seed)
-    positions[offset + 2] = seed / 0x1_0000_0000 * 3 - 2.45
-  }
 
   return positions
 }

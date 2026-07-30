@@ -70,11 +70,11 @@ const primitiveProfiles = {
 const sceneBudgetEstimates = {
   home: {
     high: {
-      maxDrawCalls: 7,
+      maxDrawCalls: 9,
       maxTriangles: 760,
     },
     medium: {
-      maxDrawCalls: 7,
+      maxDrawCalls: 9,
       maxTriangles: 520,
     },
     low: {
@@ -128,15 +128,16 @@ const sharedUniverseBudgetEstimates = {
 } as const satisfies Record<EnhancedSceneQuality, SceneBudgetEstimate>
 
 const sceneOnlyBudgetEstimates = {
-  // 首页星场：points + lineSegments + 星芒精灵 + 辉光精灵 = 4。
+  // 首页星场：星点分层 + lineSegments + 星芒精灵 + 辉光精灵。
+  // high / medium 为三层视差（3 + 3 = 6），low 只保留最近一层（1 + 3 = 4）。
   // ClusterAuras 已随节点精灵化移除（原为 2 个 draw call）。
   home: {
     high: {
-      maxDrawCalls: 4,
+      maxDrawCalls: 6,
       maxTriangles: 420,
     },
     medium: {
-      maxDrawCalls: 4,
+      maxDrawCalls: 6,
       maxTriangles: 280,
     },
     low: {

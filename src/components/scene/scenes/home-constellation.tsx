@@ -4,7 +4,10 @@ import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type { Group } from 'three'
 
-import { ConstellationField } from '../../constellation/constellation-field.client'
+import {
+  ConstellationField,
+  type StarLayerUniforms,
+} from '../../constellation/constellation-field.client'
 import {
   CONSTELLATION_STARFIELD_LERP,
   getConstellationPointerTarget,
@@ -16,6 +19,10 @@ import {
   type SpatialSceneMorphProfile,
 } from '../finite-scene-morph'
 import type { ProgrammaticSceneProps } from '../scene-router.client'
+
+// 指针视差的世界单位行程；逐层再乘以各自的 parallax 系数。
+const POINTER_TRAVEL_X = 0.42
+const POINTER_TRAVEL_Y = 0.26
 
 const defaultHomeConstellationMorphProfile: SpatialSceneMorphProfile = {
   positionX: 0,
@@ -97,7 +104,8 @@ export default function HomeConstellation({
   variant,
 }: ProgrammaticSceneProps) {
   const sceneRef = useRef<Group>(null)
-  const parallaxRef = useRef<Group>(null)
+  const starUniformsRef = useRef<readonly StarLayerUniforms[] | null>(null)
+  const elapsedRef = useRef(0)
   const pointerRef = useRef({
     x: 0,
     y: 0,
@@ -115,10 +123,12 @@ export default function HomeConstellation({
     requestFrame,
   })
 
-  useFrame((_state, delta) => {
-    const group = parallaxRef.current
+  // 星场的纵深不再靠整体旋转，而是由三层不同速率的漂移与指针视差产生。
+  // 此处只负责把时间与指针写进各层 uniform，环绕与闪烁都在顶点着色器内完成。
+  useFrame((state, delta) => {
+    const uniforms = starUniformsRef.current
 
-    if (!group || !motionActive) {
+    if (!uniforms || !motionActive) {
       return
     }
 
@@ -135,27 +145,32 @@ export default function HomeConstellation({
       CONSTELLATION_STARFIELD_LERP,
     )
 
-    group.rotation.x = pointerRef.current.y * 0.08
-    group.rotation.y = pointerRef.current.x * 0.12
+    // 夹住 delta，避免标签页切回时累积出一次大跳变
+    elapsedRef.current += Math.min(Math.max(delta, 0), 0.05)
 
-    if (quality !== 'low') {
-      group.rotation.z += Math.min(Math.max(delta, 0), 0.05) * 0.018
+    // three 的 sizeAttenuation 用画布高度的一半作为比例基准
+    const scale = state.size.height * 0.5
+
+    for (const layer of uniforms) {
+      layer.uTime.value = elapsedRef.current
+      layer.uScale.value = scale
+      layer.uPointer.value.set(
+        pointerRef.current.x * POINTER_TRAVEL_X,
+        -pointerRef.current.y * POINTER_TRAVEL_Y,
+      )
     }
 
-    const pointerSettled =
-      Math.abs(pointerTarget.x - pointerRef.current.x) < 0.001 &&
-      Math.abs(pointerTarget.y - pointerRef.current.y) < 0.001
-
-    if (quality !== 'low' || !pointerSettled) {
-      requestFrame()
-    }
+    requestFrame()
   })
 
   return (
     <group name="home-constellation" ref={sceneRef}>
-      <group ref={parallaxRef}>
-        <ConstellationField quality={quality} target={target} variant={variant} />
-      </group>
+      <ConstellationField
+        quality={quality}
+        starUniformsRef={starUniformsRef}
+        target={target}
+        variant={variant}
+      />
     </group>
   )
 }
