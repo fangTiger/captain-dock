@@ -93,13 +93,15 @@ function NodeLayer({ opacity, scale, target }: InstanceLayerProps) {
   return (
     <instancedMesh args={[undefined, undefined, CONSTELLATION_NODES.length]} ref={meshRef}>
       <circleGeometry args={[1, 24]} />
+      {/* 逐实例颜色由 setColorAt 写入 instanceColor，three.js 会自动启用
+          USE_INSTANCING_COLOR；此处不能开 vertexColors，否则着色器会去读
+          circleGeometry 上并不存在的 color 属性（默认值为全零）并把节点乘成纯黑。 */}
       <meshBasicMaterial
         blending={AdditiveBlending}
         color={CONSTELLATION_PALETTE.neutral}
         depthWrite={false}
         opacity={opacity}
         transparent
-        vertexColors
       />
     </instancedMesh>
   )
@@ -165,7 +167,6 @@ function ClusterAuras({ opacity }: Readonly<{ opacity: number }>) {
         depthWrite={false}
         opacity={opacity}
         transparent
-        vertexColors
       />
     </instancedMesh>
   )

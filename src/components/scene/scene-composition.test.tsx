@@ -11,6 +11,7 @@ import {
   isIdentifier,
   isImportDeclaration,
   isJsxAttribute,
+  isJsxElement,
   isJsxExpression,
   isJsxOpeningElement,
   isJsxSelfClosingElement,
@@ -286,6 +287,98 @@ function getDomOnlyR3fAttributes(sourcePath: string) {
   return violations
 }
 
+// three.js 在 material.vertexColors 为真时定义 USE_COLOR，顶点着色器随即执行
+// `vColor.rgb *= color`。若几何体没有 color 属性，WebGL 对缺失属性返回默认值
+// (0, 0, 0)，diffuse 被乘成零、物体渲染为纯黑。
+// 逐实例颜色（setColorAt）不需要这个开关：instanceColor 非空时 three.js 会自动
+// 启用 USE_INSTANCING_COLOR 并在片元前缀补上 USE_COLOR。
+function getUnbackedVertexColorMaterials(sourcePath: string) {
+  const source = createSourceFile(
+    sourcePath,
+    readFileSync(join(process.cwd(), sourcePath), 'utf8'),
+    ScriptTarget.Latest,
+    true,
+    ScriptKind.TSX,
+  )
+  const violations: string[] = []
+
+  function getTagName(node: Node) {
+    if (isJsxSelfClosingElement(node)) {
+      return node.tagName.getText(source)
+    }
+
+    if (isJsxElement(node)) {
+      return node.openingElement.tagName.getText(source)
+    }
+
+    return null
+  }
+
+  function getAttributes(node: Node) {
+    if (isJsxSelfClosingElement(node)) {
+      return node.attributes.properties.filter(isJsxAttribute)
+    }
+
+    if (isJsxElement(node)) {
+      return node.openingElement.attributes.properties.filter(isJsxAttribute)
+    }
+
+    return []
+  }
+
+  function declaresColorAttribute(root: Node) {
+    let found = false
+
+    function walk(node: Node) {
+      if (found) {
+        return
+      }
+
+      if (getTagName(node) === 'bufferAttribute') {
+        const attach = getAttributes(node).find(
+          (attribute) => attribute.name.getText(source) === 'attach',
+        )
+
+        if (
+          attach?.initializer !== undefined &&
+          isStringLiteral(attach.initializer) &&
+          attach.initializer.text === 'attributes-color'
+        ) {
+          found = true
+
+          return
+        }
+      }
+
+      forEachChild(node, walk)
+    }
+
+    walk(root)
+
+    return found
+  }
+
+  function visit(node: Node) {
+    if (isJsxElement(node)) {
+      for (const child of node.children) {
+        const usesVertexColors = getAttributes(child).some(
+          (attribute) => attribute.name.getText(source) === 'vertexColors',
+        )
+
+        if (usesVertexColors && !declaresColorAttribute(node)) {
+          violations.push(`${sourcePath}:${getTagName(node)}>${getTagName(child)}`)
+        }
+      }
+    }
+
+    forEachChild(node, visit)
+  }
+
+  visit(source)
+
+  return violations
+}
+
 function getSceneRootGroupName(sourcePath: string) {
   const source = createSourceFile(
     sourcePath,
@@ -543,6 +636,10 @@ describe('scene composition draw budgets', () => {
 describe('R3F intrinsic attribute safety', () => {
   it('rejects DOM-only data and aria attributes from every scene source owner', () => {
     expect(r3fSourceOwners.flatMap(getDomOnlyR3fAttributes)).toEqual([])
+  })
+
+  it('never enables vertexColors without a geometry color attribute backing it', () => {
+    expect(r3fSourceOwners.flatMap(getUnbackedVertexColorMaterials)).toEqual([])
   })
 
   it('keeps one exact literal chunk ownership name on each scene root group', () => {
