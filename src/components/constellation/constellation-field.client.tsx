@@ -9,6 +9,7 @@ import {
   SrcAlphaFactor,
   ZeroFactor,
   type InstancedMesh,
+  type Texture,
 } from 'three'
 
 import type { ProgrammaticSceneProps } from '../scene/scene-router.client'
@@ -19,8 +20,8 @@ import {
   createConstellationLinePositions,
   createConstellationStarPositions,
   createConstellationWebPositions,
-  getConstellationNodesForEcosystem,
 } from './constellation-model'
+import { getNodeGlowTexture, getNodeStreakTexture } from './constellation-textures'
 
 // 星场对页面只做「加光」，不遮挡其背后的背景。
 //
@@ -50,11 +51,24 @@ type ConstellationFieldProps = Pick<
   'quality' | 'target' | 'variant'
 >
 
-type InstanceLayerProps = Readonly<{
+type NodeSpriteLayerProps = Readonly<{
   opacity: number
-  scale: number
+  // 每个实例的平面尺寸；星芒层用非等比缩放拉成一道细长光条。
+  scale: (brightness: number) => readonly [number, number]
   target: ProgrammaticSceneProps['target']
+  texture: Texture
 }>
+
+// 辉光为正方形；星芒横向拉长、纵向压扁，长度随亮度增长——
+// 悬停目标节点时不只是变亮，星芒会横向"拉开"，指向性更强。
+const NODE_GLOW_SIZE = 1
+const NODE_STREAK_LENGTH = 2.7
+const NODE_STREAK_THICKNESS = 0.34
+
+// 亮度只通过 instanceColor 表达，辉光尺寸保持恒定，避免与颜色重复计一次。
+const glowScale = () => [NODE_GLOW_SIZE, NODE_GLOW_SIZE] as const
+const streakScale = (brightness: number) =>
+  [NODE_STREAK_LENGTH * brightness, NODE_STREAK_THICKNESS] as const
 
 function withVariantOpacity(
   opacity: number,
@@ -76,19 +90,23 @@ function getNodeBrightness(
 
 function useInstanceLayer(
   meshRef: React.RefObject<InstancedMesh | null>,
-  scale: number,
+  scale: NodeSpriteLayerProps['scale'],
   target: ProgrammaticSceneProps['target'],
 ) {
   const matrices = useMemo(
     () =>
       createInstanceMatrices(
-        CONSTELLATION_NODES.map((node) => ({
-          position: node.position,
-          rotationZ: 0,
-          scale: [scale, scale, 1],
-        })),
+        CONSTELLATION_NODES.map((node) => {
+          const [scaleX, scaleY] = scale(getNodeBrightness(node.project, target))
+
+          return {
+            position: node.position,
+            rotationZ: 0,
+            scale: [scaleX, scaleY, 1],
+          }
+        }),
       ),
-    [scale],
+    [scale, target],
   )
 
   useLayoutEffect(() => {
@@ -116,84 +134,20 @@ function useInstanceLayer(
   }, [matrices, meshRef, target])
 }
 
-function NodeLayer({ opacity, scale, target }: InstanceLayerProps) {
+function NodeSpriteLayer({ opacity, scale, target, texture }: NodeSpriteLayerProps) {
   const meshRef = useRef<InstancedMesh>(null)
 
   useInstanceLayer(meshRef, scale, target)
 
   return (
     <instancedMesh args={[undefined, undefined, CONSTELLATION_NODES.length]} ref={meshRef}>
-      <circleGeometry args={[1, 24]} />
+      <planeGeometry args={[1, 1]} />
       {/* 逐实例颜色由 setColorAt 写入 instanceColor，three.js 会自动启用
           USE_INSTANCING_COLOR；此处不能开 vertexColors，否则着色器会去读
-          circleGeometry 上并不存在的 color 属性（默认值为全零）并把节点乘成纯黑。 */}
+          planeGeometry 上并不存在的 color 属性（默认值为全零）并把节点乘成纯黑。 */}
       <meshBasicMaterial
         {...ADDITIVE_KEEP_DST_ALPHA}
-        color={CONSTELLATION_PALETTE.neutral}
-        depthWrite={false}
-        opacity={opacity}
-        transparent
-      />
-    </instancedMesh>
-  )
-}
-
-function ClusterAuras({ opacity }: Readonly<{ opacity: number }>) {
-  const meshRef = useRef<InstancedMesh>(null)
-  const clusters = useMemo(
-    () =>
-      (['arc', 'rialo'] as const).map((ecosystem) => {
-        const nodes = getConstellationNodesForEcosystem(ecosystem)
-        const center = nodes.reduce<[number, number, number]>(
-          (sum, node) => [
-            sum[0] + node.position[0] / nodes.length,
-            sum[1] + node.position[1] / nodes.length,
-            sum[2] + node.position[2] / nodes.length,
-          ],
-          [0, 0, 0] as [number, number, number],
-        )
-
-        return {
-          ecosystem,
-          position: center,
-        }
-      }),
-    [],
-  )
-  const matrices = useMemo(
-    () =>
-      createInstanceMatrices(
-        clusters.map((cluster) => ({
-          position: [cluster.position[0], cluster.position[1], -0.12],
-          rotationZ: 0,
-          scale: cluster.ecosystem === 'arc' ? [1.28, 0.82, 1] : [0.72, 0.72, 1],
-        })),
-      ),
-    [clusters],
-  )
-
-  useLayoutEffect(() => {
-    const mesh = meshRef.current
-
-    if (!mesh) {
-      return
-    }
-
-    mesh.instanceMatrix.array.set(matrices)
-    clusters.forEach((cluster, index) => {
-      mesh.setColorAt(index, new Color(CONSTELLATION_PALETTE[cluster.ecosystem]))
-    })
-    mesh.instanceMatrix.needsUpdate = true
-
-    if (mesh.instanceColor) {
-      mesh.instanceColor.needsUpdate = true
-    }
-  }, [clusters, matrices])
-
-  return (
-    <instancedMesh args={[undefined, undefined, clusters.length]} ref={meshRef}>
-      <circleGeometry args={[1, 20]} />
-      <meshBasicMaterial
+        map={texture}
         color={CONSTELLATION_PALETTE.neutral}
         depthWrite={false}
         opacity={opacity}
@@ -249,16 +203,18 @@ export function ConstellationField({
           transparent
         />
       </lineSegments>
-      <ClusterAuras opacity={withVariantOpacity(0.05, variant)} />
-      <NodeLayer
-        opacity={withVariantOpacity(0.5, variant)}
-        scale={0.34}
+      {/* 星芒画在辉光之下，让热白星核压在光条中央。 */}
+      <NodeSpriteLayer
+        opacity={withVariantOpacity(0.72, variant)}
+        scale={streakScale}
         target={target}
+        texture={getNodeStreakTexture()}
       />
-      <NodeLayer
+      <NodeSpriteLayer
         opacity={withVariantOpacity(1, variant)}
-        scale={0.12}
+        scale={glowScale}
         target={target}
+        texture={getNodeGlowTexture()}
       />
     </group>
   )
