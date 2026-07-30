@@ -93,3 +93,34 @@ describe('constellation motion', () => {
     })
   })
 })
+
+describe('星座连线只来自作品之间的真实关系', () => {
+  // 此前实现会额外把彼此靠近的随机星点两两相连（createConstellationWebPositions），
+  // 即 particles.js 式点线网。该函数已移除，此处锁死"连线只来自 CONSTELLATION_EDGES"。
+  it('顶点数恰好等于边数的两倍', () => {
+    const positions = createConstellationLinePositions()
+
+    expect(positions).toHaveLength(CONSTELLATION_EDGES.length * 2 * 3)
+  })
+
+  it('每个顶点都精确落在某个作品节点上', () => {
+    const positions = createConstellationLinePositions()
+    // 位置写入 Float32Array 后有精度损失（-2.2 → -2.200000047683716），
+    // 故把期望值也用 Math.fround 降到同一精度再比较。
+    const nodeKeys = new Set(
+      CONSTELLATION_NODES.map((node) => node.position.map(Math.fround).join(',')),
+    )
+
+    for (let offset = 0; offset < positions.length; offset += 3) {
+      const key = [positions[offset], positions[offset + 1], positions[offset + 2]].join(',')
+
+      expect(nodeKeys).toContain(key)
+    }
+  })
+
+  it('连线数量不随星点密度变化', () => {
+    const lengths = (['high', 'medium', 'low'] as const).map(() => createConstellationLinePositions().length)
+
+    expect(new Set(lengths).size).toBe(1)
+  })
+})

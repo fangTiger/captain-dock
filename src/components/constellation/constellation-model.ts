@@ -96,38 +96,6 @@ function nextSeed(seed: number) {
   return (Math.imul(seed, 1_664_525) + 1_013_904_223) >>> 0
 }
 
-// 生成"邻近星网"：把彼此靠近的星点用细线连起来，形成原型那种密集星座网。
-// 结果与节点连线合并进同一条 lineSegments，不额外增加 draw call。
-export function createConstellationWebPositions(
-  stars: Float32Array,
-  maxDistance = 1.02,
-  maxLinksPerStar = 2,
-) {
-  const count = Math.floor(stars.length / 3)
-  const segments: number[] = []
-  const maxDistanceSq = maxDistance * maxDistance
-
-  for (let i = 0; i < count; i += 1) {
-    const ax = stars[i * 3]
-    const ay = stars[i * 3 + 1]
-    const az = stars[i * 3 + 2]
-    let links = 0
-
-    for (let j = i + 1; j < count && links < maxLinksPerStar; j += 1) {
-      const dx = ax - stars[j * 3]
-      const dy = ay - stars[j * 3 + 1]
-      const dz = az - stars[j * 3 + 2]
-
-      if (dx * dx + dy * dy + dz * dz <= maxDistanceSq) {
-        segments.push(ax, ay, az, stars[j * 3], stars[j * 3 + 1], stars[j * 3 + 2])
-        links += 1
-      }
-    }
-  }
-
-  return new Float32Array(segments)
-}
-
 export function createConstellationStarPositions(quality: EnhancedSceneQuality) {
   const count = CONSTELLATION_STAR_COUNTS[quality]
   const positions = new Float32Array(count * 3)

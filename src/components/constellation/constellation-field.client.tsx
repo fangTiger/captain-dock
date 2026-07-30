@@ -19,7 +19,6 @@ import {
   CONSTELLATION_PALETTE,
   createConstellationLinePositions,
   createConstellationStarPositions,
-  createConstellationWebPositions,
 } from './constellation-model'
 import { getNodeGlowTexture, getNodeStreakTexture } from './constellation-textures'
 
@@ -163,15 +162,10 @@ export function ConstellationField({
   variant,
 }: ConstellationFieldProps) {
   const stars = useMemo(() => createConstellationStarPositions(quality), [quality])
-  // 节点连线 + 邻近星网合并进同一条 lineSegments（保持 5 draw calls）。
-  const lines = useMemo(() => {
-    const edges = createConstellationLinePositions()
-    const web = createConstellationWebPositions(stars)
-    const merged = new Float32Array(edges.length + web.length)
-    merged.set(edges, 0)
-    merged.set(web, edges.length)
-    return merged
-  }, [stars])
+  // 连线只来自 CONSTELLATION_EDGES，即四个作品之间的真实星座关系。
+  // 原先还会把彼此靠近的随机星点两两相连，那是 particles.js 式的点线网，
+  // 廉价联想极强，已随本次重设计移除。
+  const lines = useMemo(() => createConstellationLinePositions(), [])
 
   return (
     <group
