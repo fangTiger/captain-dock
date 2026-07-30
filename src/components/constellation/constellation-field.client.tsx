@@ -2,13 +2,9 @@
 
 import { useLayoutEffect, useMemo, useRef } from 'react'
 import {
-  AddEquation,
+  AdditiveBlending,
   Color,
-  CustomBlending,
-  OneFactor,
-  SrcAlphaFactor,
   Vector2,
-  ZeroFactor,
   type InstancedMesh,
   type Texture,
 } from 'three'
@@ -36,27 +32,25 @@ import {
   getStarLayersForQuality,
 } from './constellation-starfield'
 
-// 星场对页面只做「加光」，不遮挡其背后的背景。
+// 星场统一使用标准 AdditiveBlending。
 //
-// three.js 的 AdditiveBlending 用 gl.blendFunc(SRC_ALPHA, ONE)，该设置同时
-// 作用于 alpha 通道（A = src.a² + dst.a），会持续累积画布 alpha。渲染器以
-// alpha: true 创建，浏览器按 result = canvasRGB + pageBG × (1 − a) 合成，
-// 累积的 alpha 会按比例削弱 globals.css 中页面自身的径向渐变。
+// ⚠️ 不要改成「RGB 加法 + alpha 恒取 dst」的 CustomBlending。曾经这么做过
+// （bc4785e），动机是：AdditiveBlending 的 gl.blendFunc(SRC_ALPHA, ONE) 同时
+// 作用于 alpha 通道（A = src.a² + dst.a），会累积画布 alpha，而渲染器以
+// alpha: true 创建、浏览器按 result = canvasRGB + pageBG × (1 − a) 合成，
+// 于是画布会轻微遮挡 globals.css 里页面自身的径向渐变。
 //
-// 改为 CustomBlending：RGB 保持加法，alpha 恒取 dst（A = 0 × src.a + 1 × dst.a），
-// 画布 alpha 始终为 0，合成退化为纯加法。
+// 但 blendSrcAlpha: ZeroFactor / blendDstAlpha: OneFactor 会让画布 alpha 恒为
+// 0 而 RGB 大于 0，这在预乘 alpha 的定义下是非法数据。Chrome/Metal 容忍它，
+// WebKit 严格按预乘语义把 RGB 钳到 alpha —— 结果整片星场在 Safari 里彻底消失
+// （实测 WebKit 合成后最大亮度 58、亮像素 0%，而 Chrome 为 255、1.2%；
+// canvas 挂载、ready=true、7 个 draw call 全部正常，问题只在合成阶段）。
 //
-// 注：实测该削弱幅度有限（峰值 alpha ≈ 0.38、中位 ≈ 0.06），并非节点观感问题
-// 的主因——主因是此前 vertexColors 缺陷把节点颜色归零（见 faccdf0）。此处属
-// 正确性改进，代价为零。
-const ADDITIVE_KEEP_DST_ALPHA = {
-  blending: CustomBlending,
-  blendEquation: AddEquation,
-  blendSrc: SrcAlphaFactor,
-  blendDst: OneFactor,
-  blendEquationAlpha: AddEquation,
-  blendSrcAlpha: ZeroFactor,
-  blendDstAlpha: OneFactor,
+// 而它换来的收益微乎其微：实测 alpha 累积峰值仅 0.38、中位 0.06，且节点当初
+// 之所以像"贴上去的硬币"，主因是 vertexColors 缺陷把颜色归零（faccdf0），
+// 与 alpha 无关。负收益交换，已回退。
+const ADDITIVE_LIGHT = {
+  blending: AdditiveBlending,
 } as const
 
 // 星层 uniform 由本组件创建、经 ref 交给 HomeConstellation 的 useFrame 驱动。
@@ -147,7 +141,7 @@ function NebulaLayer({
     <instancedMesh args={[undefined, undefined, clouds.length]} ref={localRef}>
       <planeGeometry args={[1, 1]} />
       <meshBasicMaterial
-        {...ADDITIVE_KEEP_DST_ALPHA}
+        {...ADDITIVE_LIGHT}
         map={getNebulaTexture()}
         color={CONSTELLATION_PALETTE.neutral}
         depthWrite={false}
@@ -253,7 +247,7 @@ function NodeSpriteLayer({ opacity, scale, target, texture }: NodeSpriteLayerPro
           USE_INSTANCING_COLOR；此处不能开 vertexColors，否则着色器会去读
           planeGeometry 上并不存在的 color 属性（默认值为全零）并把节点乘成纯黑。 */}
       <meshBasicMaterial
-        {...ADDITIVE_KEEP_DST_ALPHA}
+        {...ADDITIVE_LIGHT}
         map={texture}
         color={CONSTELLATION_PALETTE.neutral}
         depthWrite={false}
@@ -319,7 +313,7 @@ export function ConstellationField({
             <bufferAttribute args={[layer.attributes.rates, 1]} attach="attributes-aRate" />
           </bufferGeometry>
           <shaderMaterial
-            {...ADDITIVE_KEEP_DST_ALPHA}
+            {...ADDITIVE_LIGHT}
             depthWrite={false}
             fragmentShader={STAR_LAYER_FRAGMENT_SHADER}
             transparent
@@ -333,7 +327,7 @@ export function ConstellationField({
           <bufferAttribute args={[lines, 3]} attach="attributes-position" />
         </bufferGeometry>
         <lineBasicMaterial
-          {...ADDITIVE_KEEP_DST_ALPHA}
+          {...ADDITIVE_LIGHT}
           color={CONSTELLATION_PALETTE.arc}
           depthWrite={false}
           opacity={withVariantOpacity(0.22, variant)}
