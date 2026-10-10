@@ -131,7 +131,9 @@ test('home index hover drives the constellation preview target', async ({ page }
 
 test('home has no horizontal overflow at mobile and desktop widths', async ({ page }) => {
   for (const viewport of [
+    { width: 320, height: 900 },
     { width: 375, height: 900 },
+    { width: 390, height: 900 },
     { width: 1440, height: 960 },
   ]) {
     await page.setViewportSize(viewport)
@@ -140,7 +142,7 @@ test('home has no horizontal overflow at mobile and desktop widths', async ({ pa
   }
 })
 
-test('home exposes skip link, navigation, ecosystem entries, project CTAs, and about by keyboard', async ({
+test('home exposes skip link, navigation, ecosystem entries, and project CTAs by keyboard', async ({
   page,
 }) => {
   await page.goto('/')
@@ -153,6 +155,14 @@ test('home exposes skip link, navigation, ecosystem entries, project CTAs, and a
     'global Arc navigation',
     page.getByRole('navigation', { name: 'Primary navigation' }).getByRole('link', { name: 'Arc' }),
   )
+  const demosLink = page.getByRole('banner').getByRole('link', {
+    name: /Demos.*opens an external site/i,
+  })
+
+  await expect(demosLink).toHaveAttribute('href', 'https://demos.captain-dock.xyz')
+  await expect(demosLink).toHaveAttribute('target', '_blank')
+  await expect(demosLink).toHaveAttribute('rel', /noopener/)
+  await expectKeyboardCanReach(page, 'global Demos navigation', demosLink)
   // 键盘焦点统一由索引条承担：星场是 aria-hidden 的装饰层，
   // 节点不进 Tab 顺序，避免同一导航目标出现两个 tab stop
   await expectKeyboardCanReach(
@@ -164,30 +174,30 @@ test('home exposes skip link, navigation, ecosystem entries, project CTAs, and a
   )
 })
 
-test('about keeps unknown author details explicit and links back to the index', async ({ page }) => {
+test('footer exposes Demos and X while legacy About redirects home', async ({ page }) => {
+  await page.goto('/arc')
+
+  const footer = page.locator('footer.site-footer')
+  const footerNav = footer.getByRole('navigation', { name: 'Footer navigation' })
+  const demosLink = footerNav.getByRole('link', { name: /Demos.*opens an external site/i })
+  const xLink = footer.getByRole('link', { name: /@mycndota.*opens an external site/i })
+
+  await expect(footer.getByRole('link')).toHaveCount(6)
+  await expect(footerNav.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/')
+  await expect(footerNav.getByRole('link', { name: 'Arc' })).toHaveAttribute('href', '/arc')
+  await expect(footerNav.getByRole('link', { name: 'Rialo' })).toHaveAttribute('href', '/rialo')
+  await expect(demosLink).toHaveAttribute('href', 'https://demos.captain-dock.xyz')
+  await expect(demosLink).toHaveAttribute('target', '_blank')
+  await expect(demosLink).toHaveAttribute('rel', /noopener/)
+  await expect(footer.getByRole('link', { name: 'About' })).toHaveCount(0)
+  await expect(xLink).toHaveAttribute('href', 'https://x.com/mycndota')
+  await expect(xLink).toHaveAttribute('target', '_blank')
+  await expect(xLink).toHaveAttribute('rel', /noopener/)
+
   await page.goto('/about')
 
-  const main = page.locator('main#main-content')
-
-  await expect(page.locator('h1')).toHaveCount(1)
-  await expect(main.getByRole('heading', { level: 1 })).toHaveText('About')
-  await expect(main.getByText(/readable index of Arc and Rialo work/i)).toBeVisible()
-  await expect(main.getByText(/author name is unconfirmed/i)).toBeVisible()
-  await expect(main.getByText(/author background is unconfirmed/i)).toBeVisible()
-  await expect(main.getByText(/contact details are unconfirmed/i)).toBeVisible()
-  await expect(main.getByText(/project branches, case files, and live project entries/i)).toBeVisible()
-  await expect(main.locator('a[href^="mailto:"], a[href^="tel:"]')).toHaveCount(0)
-  await expect(main.getByRole('link', { name: 'Return to Captain Dock' })).toHaveAttribute('href', '/')
-  await expect(main.getByRole('link', { name: 'Browse the project index' })).toHaveAttribute(
-    'href',
-    '/#project-index',
-  )
-
-  await page.keyboard.press('Tab')
-  await expect(page.locator('.skip-link')).toBeFocused()
-  await expectKeyboardCanReach(
-    page,
-    'about return link',
-    main.getByRole('link', { name: 'Return to Captain Dock' }),
-  )
+  await expect(page).toHaveURL(/\/$/)
+  await expect(
+    page.getByRole('navigation', { name: 'Primary navigation' }).getByRole('link', { name: 'About' }),
+  ).toHaveCount(0)
 })

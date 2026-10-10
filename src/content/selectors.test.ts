@@ -35,7 +35,7 @@ describe('项目内容选择器', () => {
     expect(getProjectsByEcosystem('not-real')).toEqual([])
   })
 
-  it('从同一内容目录生成八条公开路由', () => {
+  it('从同一内容目录生成七条公开路由且不发布 About', () => {
     expect(getAllPublicRoutes()).toEqual([
       '/',
       '/arc',
@@ -44,7 +44,6 @@ describe('项目内容选择器', () => {
       '/arc/arcpredict',
       '/rialo',
       '/rialo/rialo-captain',
-      '/about',
     ])
   })
 

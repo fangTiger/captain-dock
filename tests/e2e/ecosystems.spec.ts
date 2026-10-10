@@ -575,17 +575,14 @@ test('Arc uses three stage selectors to switch one catalog-backed observation in
   }
 
   await expectArcProject(main, stage, arcProjects[0])
-  await expectKeyboardCanReach(page, 'Arc Research selector', selectors.nth(0))
-  await page.keyboard.press('ArrowRight')
-  await expect(selectors.nth(1)).toBeFocused()
-  await expect(selectors.nth(0)).toHaveAttribute('aria-pressed', 'true')
-  await expect(selectors.nth(1)).toHaveAttribute('aria-pressed', 'false')
-  await page.keyboard.press('Enter')
+  await selectors.nth(1).hover()
   await expectArcProject(main, stage, arcProjects[1])
-
+  await expectKeyboardCanReach(page, 'Arc Exchange selector', selectors.nth(1))
   await page.keyboard.press('ArrowRight')
   await expect(selectors.nth(2)).toBeFocused()
-  await page.keyboard.press('Space')
+  await expect(selectors.nth(1)).toHaveAttribute('aria-pressed', 'true')
+  await expect(selectors.nth(2)).toHaveAttribute('aria-pressed', 'false')
+  await page.keyboard.press('Enter')
   await expectArcProject(main, stage, arcProjects[2])
 })
 

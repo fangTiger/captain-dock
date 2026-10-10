@@ -14,7 +14,6 @@ const externalProductionServer = process.env.CAPTAIN_DOCK_EXTERNAL_PRODUCTION ==
 const cinematicHandoffStorageKey = 'captain-dock:cinematic-handoff'
 const sceneTerminalWindowMs = 720
 const coldRoutes = [
-  '/about',
   '/arc/signal-ledger',
   '/arc/hadron',
   '/arc/arcpredict',
@@ -1319,10 +1318,11 @@ test('production public lifecycle pauses offscreen and hidden scenes and resumes
   failures.expectNoFailures()
 })
 
-test('three About to Home cycles release universe listeners, observers, RAF, and connected WebGL context to baseline', async ({
+test('three cold route to Home cycles release universe listeners, observers, RAF, and connected WebGL context to baseline', async ({
   browser,
   baseURL,
 }) => {
+  const coldPath = '/arc/signal-ledger'
   const context = await browser.newContext({
     baseURL,
     viewport: {
@@ -1336,7 +1336,7 @@ test('three About to Home cycles release universe listeners, observers, RAF, and
   const failures = attachRuntimeFailureCollector(page)
 
   try {
-    await page.goto('/about')
+    await page.goto(coldPath)
     await expect(page.locator('[data-universe-shell]')).toHaveCount(0)
     await expect(page.locator('[data-universe-content]')).toHaveCount(0)
     await expect(page.locator('canvas[data-universe-canvas]')).toHaveCount(0)
@@ -1354,8 +1354,8 @@ test('three About to Home cycles release universe listeners, observers, RAF, and
     expect(coldMounted.activeUniverseContextCount).toBeGreaterThan(coldBaseline.activeUniverseContextCount)
     expect(coldMounted.universeContextCreateCount).toBeGreaterThan(coldBaseline.universeContextCreateCount)
 
-    await page.getByRole('navigation', { name: 'Primary navigation' }).getByRole('link', { name: 'About' }).click()
-    await expect(page).toHaveURL(/\/about$/)
+    await page.goto(coldPath)
+    await expect(page).toHaveURL(/\/arc\/signal-ledger$/)
     await expect(page.locator('[data-universe-shell]')).toHaveCount(0)
     await expect(page.locator('[data-universe-content]')).toHaveCount(0)
     await expect(page.locator('canvas[data-universe-canvas]')).toHaveCount(0)
@@ -1383,8 +1383,8 @@ test('three About to Home cycles release universe listeners, observers, RAF, and
       expect(mounted.activeUniverseContextCount).toBeGreaterThan(warmedBaseline.activeUniverseContextCount)
       expect(mounted.universeContextCreateCount).toBeGreaterThan(warmedBaseline.universeContextCreateCount)
 
-      await page.getByRole('navigation', { name: 'Primary navigation' }).getByRole('link', { name: 'About' }).click()
-      await expect(page).toHaveURL(/\/about$/)
+      await page.goto(coldPath)
+      await expect(page).toHaveURL(/\/arc\/signal-ledger$/)
       await expect(page.locator('[data-universe-shell]')).toHaveCount(0)
       await expect(page.locator('[data-universe-content]')).toHaveCount(0)
       await expect(page.locator('canvas[data-universe-canvas]')).toHaveCount(0)
@@ -1435,7 +1435,6 @@ test('cold and static contexts do not request the enhanced-only sentinel scripts
   }
 
   const coldRoutesWithoutEnhancedScripts = [
-    '/about',
     '/arc/signal-ledger',
     '/arc/hadron',
     '/arc/arcpredict',

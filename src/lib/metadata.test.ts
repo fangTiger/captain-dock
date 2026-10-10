@@ -133,7 +133,8 @@ describe('site metadata 工厂', () => {
       }),
     }))
 
-    expect(entries).toHaveLength(8)
+    expect(entries).toHaveLength(7)
+    expect(() => getRouteDescriptor('/about' as PublicRoute)).toThrow(/not a public Captain Dock route/)
     expect(new Set(entries.map(({ descriptor }) => descriptor.title)).size).toBe(entries.length)
     expect(new Set(entries.map(({ descriptor }) => descriptor.description)).size).toBe(entries.length)
     expect(new Set(entries.map(({ descriptor }) => descriptor.canonicalPath)).size).toBe(entries.length)

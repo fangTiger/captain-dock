@@ -87,15 +87,15 @@ afterEach(() => {
 describe('CinematicNavigationBridge', () => {
   it('publishes immediate departure feedback, then hands native href to the router within budget', async () => {
     renderBridge()
-    const link = screen.getByRole('link', { name: 'Signal case file' })
+    const link = screen.getByRole('link', { name: 'Arc route' })
 
     fireEvent.click(link, { button: 0 })
 
     const bridge = document.querySelector('[data-cinematic-navigation]')
 
-    expect(link).toHaveAttribute('href', '/arc/signal-ledger')
+    expect(link).toHaveAttribute('href', '/arc')
     expect(bridge).toHaveAttribute('data-cinematic-navigation-phase', 'departing')
-    expect(bridge).toHaveAttribute('data-cinematic-navigation-target', 'project:signal-ledger')
+    expect(bridge).toHaveAttribute('data-cinematic-navigation-target', 'ecosystem:arc')
     expect(Number(bridge?.getAttribute('data-cinematic-navigation-token'))).toBeGreaterThan(0)
     expect(navigationMocks.push).not.toHaveBeenCalled()
 
@@ -104,7 +104,24 @@ describe('CinematicNavigationBridge', () => {
     })
 
     expect(navigationMocks.push).toHaveBeenCalledTimes(1)
+    expect(navigationMocks.push).toHaveBeenCalledWith('/arc')
+  })
+
+  it('lets home project links route immediately without the carrier handoff', () => {
+    renderBridge()
+
+    fireEvent.click(screen.getByRole('link', { name: 'Signal case file' }), { button: 0 })
+
+    const bridge = document.querySelector('[data-cinematic-navigation]')
+
+    expect(navigationMocks.push).toHaveBeenCalledTimes(1)
     expect(navigationMocks.push).toHaveBeenCalledWith('/arc/signal-ledger')
+    expect(bridge).toHaveAttribute('data-cinematic-navigation-phase', 'idle')
+    expect(bridge).toHaveAttribute('data-cinematic-navigation-progress', '1')
+    expect(bridge).toHaveAttribute('data-cinematic-navigation-target', '')
+    expect(bridge).toHaveAttribute('data-cinematic-navigation-token', '0')
+    expect(document.querySelector('[data-cinematic-handoff-signal]')).toBeNull()
+    expect(window.sessionStorage.getItem(cinematicHandoffStorageKey)).toBeNull()
   })
 
   it('cancels a stale departure when a newer ordinary click redirects the handoff', async () => {
@@ -298,7 +315,7 @@ describe('CinematicNavigationBridge', () => {
   })
 
   it('resumes detail arrival with the same carrier token, target, direction, and elapsed progress', async () => {
-    const { unmount } = renderBridge()
+    const { unmount } = renderBridge('arc')
 
     fireEvent.click(screen.getByRole('link', { name: 'Signal case file' }), { button: 0 })
     const bridge = document.querySelector('[data-cinematic-navigation]')
@@ -341,7 +358,7 @@ describe('CinematicNavigationBridge', () => {
       'data-cinematic-handoff-target',
       'project:signal-ledger',
     )
-    expect(carrier).toHaveAttribute('data-cinematic-carrier-direction', 'home-beacon')
+    expect(carrier).toHaveAttribute('data-cinematic-carrier-direction', 'arc-signal-path')
     expect(carrier).toHaveAttribute('data-project-motif', 'ledger')
 
     await act(async () => {
@@ -362,7 +379,7 @@ describe('CinematicNavigationBridge', () => {
       'data-cinematic-handoff-target',
       'project:signal-ledger',
     )
-    expect(carrier).toHaveAttribute('data-cinematic-carrier-direction', 'home-beacon')
+    expect(carrier).toHaveAttribute('data-cinematic-carrier-direction', 'arc-signal-path')
     expect(carrier).toHaveAttribute('data-project-motif', 'ledger')
 
     await act(async () => {
@@ -378,7 +395,7 @@ describe('CinematicNavigationBridge', () => {
   })
 
   it('keeps the one-shot detail carrier available across a StrictMode effect replay', async () => {
-    const bridge = renderBridge()
+    const bridge = renderBridge('arc')
 
     fireEvent.click(screen.getByRole('link', { name: 'Signal case file' }), { button: 0 })
     await act(async () => {
@@ -405,7 +422,7 @@ describe('CinematicNavigationBridge', () => {
   })
 
   it('settles detail arrival and clears the matching handoff when the document becomes hidden', async () => {
-    const bridge = renderBridge()
+    const bridge = renderBridge('arc')
 
     fireEvent.click(screen.getByRole('link', { name: 'Signal case file' }), { button: 0 })
     await act(async () => {
@@ -448,7 +465,7 @@ describe('CinematicNavigationBridge', () => {
   })
 
   it('clears a detail handoff on true unmount without replaying stale arrival', async () => {
-    const bridge = renderBridge()
+    const bridge = renderBridge('arc')
 
     fireEvent.click(screen.getByRole('link', { name: 'Signal case file' }), { button: 0 })
     await act(async () => {
@@ -506,7 +523,7 @@ describe('CinematicNavigationBridge', () => {
   })
 
   it('clears a consumed carrier token when the detail component receives a direct destination', async () => {
-    const bridge = renderBridge()
+    const bridge = renderBridge('arc')
 
     fireEvent.click(screen.getByRole('link', { name: 'Signal case file' }), { button: 0 })
     await act(async () => {
@@ -537,7 +554,7 @@ describe('CinematicNavigationBridge', () => {
   })
 
   it('rejects and consumes an expired detail handoff instead of replaying stale motion', async () => {
-    const bridge = renderBridge()
+    const bridge = renderBridge('arc')
 
     fireEvent.click(screen.getByRole('link', { name: 'Signal case file' }), { button: 0 })
     await act(async () => {

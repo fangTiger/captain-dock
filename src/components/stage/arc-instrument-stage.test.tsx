@@ -151,10 +151,11 @@ describe('ArcInstrumentStage', () => {
       name: /02.*Exchange/i,
     })
 
-    await user.click(hadronSelector)
+    await user.hover(hadronSelector)
 
     expectCommittedProject(main as HTMLElement, stage as HTMLElement, arcProjects[1], selectors)
 
+    hadronSelector.focus()
     await user.keyboard('{ArrowRight}')
     expect(selectors[2]).toHaveFocus()
     expectCommittedProject(main as HTMLElement, stage as HTMLElement, arcProjects[1], selectors)

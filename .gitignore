@@ -35,6 +35,7 @@ log/
 # 本地工具/任务缓存
 cache/
 .devos/
+.superpowers/
 
 # 系统
 .DS_Store

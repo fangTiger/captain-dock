@@ -42,17 +42,6 @@ function publicRouteExpectations(): readonly RouteExpectation[] {
       }
     }
 
-    if (route === '/about') {
-      return {
-        description:
-          'The information boundaries of Captain Dock: confirmed Arc and Rialo projects without an invented author biography.',
-        imagePath: defaultShareImagePath,
-        jsonLdKind: 'none',
-        route,
-        title: 'About | Captain Dock',
-      }
-    }
-
     const ecosystem = ecosystems.find((item) => route === `/${item.slug}`)
 
     if (ecosystem) {
@@ -469,7 +458,7 @@ test('portfolio 404 exposes independent metadata without canonical, og:url, or J
   expect(failures).toEqual([])
 })
 
-test('sitemap and robots publish only the eight public routes on the same origin', async ({ request }) => {
+test('sitemap and robots publish only the seven public routes on the same origin', async ({ request }) => {
   const sitemap = await expectResource(request, '/sitemap.xml', /\b(?:application|text)\/xml\b/)
   const sitemapXml = await sitemap.text()
   const locs = extractLocs(sitemapXml)
@@ -487,6 +476,7 @@ test('sitemap and robots publish only the eight public routes on the same origin
 
   expect(sitemapXml).not.toContain('/not-real')
   expect(sitemapXml).not.toContain('/not-exists')
+  expect(sitemapXml).not.toContain('/about')
 
   const robots = await expectResource(request, '/robots.txt', /^text\/plain\b/)
   const robotsText = await robots.text()

@@ -4,7 +4,6 @@ import { join } from 'node:path'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import AboutPage from '../../app/(content)/about/page'
 import { ecosystems, projects } from '../../content/catalog'
 import { HomeInstrumentStage } from './home-instrument-stage'
 
@@ -294,16 +293,6 @@ describe('HomeInstrumentStage', () => {
 
     expect(stage).toHaveAttribute('data-visual-project', arcPredict.slug)
     expect(stage).toHaveAttribute('data-scene-motion', 'commit')
-  })
-
-  it('keeps About on the same flat editorial rail without inventing contact details', () => {
-    const { container } = render(<AboutPage />)
-    const main = container.querySelector('[data-about-layout="editorial-rail"]')
-
-    expect(main).not.toBeNull()
-    expect(main?.querySelectorAll('[data-about-boundary]')).toHaveLength(3)
-    expect(main?.querySelector('a[href^="mailto:"]')).toBeNull()
-    expect(main?.querySelector('a[href^="tel:"]')).toBeNull()
   })
 
   it('keeps the mobile monument dominant while compressing copy and preserving six normal-flow index targets', () => {

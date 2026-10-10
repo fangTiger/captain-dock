@@ -391,6 +391,10 @@ function getInternalDestination(anchor: HTMLAnchorElement, pathname: string) {
   return `${destination.pathname}${destination.search}${destination.hash}`
 }
 
+function shouldRouteWithoutCarrier(scene: ImmersiveSceneId, target: string) {
+  return scene === 'home' && target.startsWith('project:')
+}
+
 function prefersReducedMotion() {
   return (
     typeof window.matchMedia === 'function' &&
@@ -540,6 +544,20 @@ export function CinematicNavigationBridge({
     const destination = getInternalDestination(anchor, pathname)
 
     if (!destination) {
+      return
+    }
+
+    if (shouldRouteWithoutCarrier(scene, target)) {
+      event.preventDefault()
+      const activeToken = activeTokenRef.current
+
+      pendingDestinationRef.current = null
+      activeTokenRef.current = 0
+      cancelTimeline()
+      clearPersistedHandoff(activeToken)
+      activeCarrierDirections.delete(activeToken)
+      setNavigation(initialNavigationState)
+      routerPush(destination)
       return
     }
 

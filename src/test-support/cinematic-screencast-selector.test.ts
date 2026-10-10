@@ -232,7 +232,7 @@ describe('cinematic evidence semantic contracts', () => {
     }
   })
 
-  it('captures Home opening from a prewarmed same-origin about page without changing screencast fidelity', () => {
+  it('captures Home opening from a prewarmed same-origin cold page without changing screencast fidelity', () => {
     const motionSource = readCinematicMotionSource()
     const homeOpeningSource = readHomeOpeningTestSource()
     const prewarmIndex = homeOpeningSource.indexOf('await prewarmHomeOpening(page)')
@@ -240,7 +240,7 @@ describe('cinematic evidence semantic contracts', () => {
     const armIndex = homeOpeningSource.indexOf("await armCinematicScreencast(page, 'home-opening')")
 
     expect(motionSource).toContain('async function prewarmHomeOpening(page: Page)')
-    expect(motionSource).toContain("await page.goto('/about')")
+    expect(motionSource).toContain("await page.goto('/arc/signal-ledger')")
     expect(motionSource).not.toContain("await page.goto('about:blank')")
     expect(prewarmIndex).toBeGreaterThanOrEqual(0)
     expect(recorderIndex).toBeGreaterThan(prewarmIndex)

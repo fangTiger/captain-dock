@@ -19,7 +19,7 @@ export type RouteDescriptor = Readonly<{
   title: string
   description: string
   imagePath: `/projects/${string}` | typeof DEFAULT_SHARE_IMAGE_PATH
-  kind: 'home' | 'ecosystem' | 'project' | 'about'
+  kind: 'home' | 'ecosystem' | 'project'
   ecosystem?: EcosystemSlug
   project?: ProjectSlug
 }>
@@ -173,18 +173,6 @@ function homeDescriptor(): RouteDescriptor {
   }
 }
 
-function aboutDescriptor(): RouteDescriptor {
-  return {
-    route: '/about',
-    canonicalPath: '/about',
-    title: 'About | Captain Dock',
-    description:
-      'The information boundaries of Captain Dock: confirmed Arc and Rialo projects without an invented author biography.',
-    imagePath: DEFAULT_SHARE_IMAGE_PATH,
-    kind: 'about',
-  }
-}
-
 function ecosystemDescriptor(route: PublicRoute): RouteDescriptor | undefined {
   const ecosystem = ecosystems.find((item) => route === `/${item.slug}`)
 
@@ -223,12 +211,7 @@ function projectDescriptor(route: PublicRoute): RouteDescriptor | undefined {
 }
 
 export function getRouteDescriptor(route: PublicRoute): RouteDescriptor {
-  const descriptor =
-    route === '/'
-      ? homeDescriptor()
-      : route === '/about'
-        ? aboutDescriptor()
-        : ecosystemDescriptor(route) ?? projectDescriptor(route)
+  const descriptor = route === '/' ? homeDescriptor() : ecosystemDescriptor(route) ?? projectDescriptor(route)
 
   if (!descriptor) {
     throw new Error(`Route ${route} is not a public Captain Dock route.`)

@@ -3,12 +3,14 @@
 import { usePathname } from 'next/navigation'
 
 import { ControlLink } from '../ui/control-link'
+import { ExternalLink } from '../ui/external-link'
+
+const demosHref = 'https://demos.captain-dock.xyz' as const
 
 const navItems = [
   { href: '/', label: 'Home' },
   { href: '/arc', label: 'Arc' },
   { href: '/rialo', label: 'Rialo' },
-  { href: '/about', label: 'About' },
 ] as const
 
 function isCurrentRoute(pathname: string, href: (typeof navItems)[number]['href']) {
@@ -43,23 +45,30 @@ export function SiteHeader() {
             CAPTAIN DOCK
           </span>
         </ControlLink>
-        <nav className="site-nav" aria-label="Primary navigation">
-          {navItems.map((item) => {
-            const isCurrent = isCurrentRoute(pathname, item.href)
+        <div className="site-header__actions">
+          <nav className="site-nav" aria-label="Primary navigation">
+            {navItems.map((item) => {
+              const isCurrent = isCurrentRoute(pathname, item.href)
 
-            return (
-              <ControlLink
-                aria-current={isCurrent ? 'page' : undefined}
-                className="site-nav__link"
-                controlRole="quiet"
-                href={item.href}
-                key={item.href}
-              >
-                {item.label}
-              </ControlLink>
-            )
-          })}
-        </nav>
+              return (
+                <ControlLink
+                  aria-current={isCurrent ? 'page' : undefined}
+                  className="site-nav__link"
+                  controlRole="quiet"
+                  href={item.href}
+                  key={item.href}
+                >
+                  {item.label}
+                </ControlLink>
+              )
+            })}
+          </nav>
+          <div className="site-header__utility">
+            <ExternalLink className="site-header__demos-link" href={demosHref}>
+              Demos
+            </ExternalLink>
+          </div>
+        </div>
       </div>
     </header>
   )

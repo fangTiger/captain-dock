@@ -15,7 +15,6 @@ const publicRoutes = [
   { path: '/arc/arcpredict', heading: 'ArcPredict' },
   { path: '/rialo', heading: 'Rialo' },
   { path: '/rialo/rialo-captain', heading: 'Rialo Captain' },
-  { path: '/about', heading: 'About' },
 ] as const
 
 function exactHeadingAccessibleName(heading: string) {
@@ -107,6 +106,20 @@ function collectUnexpectedRuntimeErrors(
 
   return errors
 }
+
+test('legacy /about redirects to the home index', async ({ page, baseURL }) => {
+  const runtimeErrors = collectUnexpectedRuntimeErrors(page, { baseURL })
+  const response = await page.goto('/about')
+
+  expect(response?.ok()).toBe(true)
+  await expect(page).toHaveURL(/\/$/)
+  await expect(page.locator('main#main-content')).toHaveCount(1)
+  await expect(page.locator('h1')).toHaveAccessibleName(exactHeadingAccessibleName('CAPTAIN DOCK'))
+  await expect(
+    page.getByRole('navigation', { name: 'Primary navigation' }).getByRole('link', { name: 'About' }),
+  ).toHaveCount(0)
+  expect(runtimeErrors).toEqual([])
+})
 
 for (const route of publicRoutes) {
   test(`${route.path} returns a readable static page`, async ({ page, baseURL }) => {

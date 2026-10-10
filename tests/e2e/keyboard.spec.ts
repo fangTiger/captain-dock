@@ -109,13 +109,13 @@ async function expectRialoState(page: Page, stepIndex: number) {
   await expect(stage.locator('[data-rialo-step-description]:visible')).toHaveCount(1)
 }
 
-test('/about skip link focuses main and Shift+Tab can return through header navigation', async ({ page }) => {
-  await page.goto('/about')
+test('/rialo skip link focuses main and Shift+Tab can return through header navigation', async ({ page }) => {
+  await page.goto('/rialo')
 
   const skipLink = page.locator('.skip-link')
   const main = page.locator('main#main-content')
   const primaryNav = page.getByRole('navigation', { name: 'Primary navigation' })
-  const aboutLink = primaryNav.getByRole('link', { name: 'About' })
+  const arcLink = primaryNav.getByRole('link', { name: 'Arc' })
   const rialoLink = primaryNav.getByRole('link', { name: 'Rialo' })
 
   await page.keyboard.press('Tab')
@@ -128,22 +128,22 @@ test('/about skip link focuses main and Shift+Tab can return through header navi
   await expect(main).toBeFocused()
 
   await page.keyboard.press('Shift+Tab')
-  await expect(aboutLink).toBeFocused()
-  await expectFocusRing(aboutLink, 'About header link')
-
-  await page.keyboard.press('Shift+Tab')
   await expect(rialoLink).toBeFocused()
   await expectFocusRing(rialoLink, 'Rialo header link')
 
+  await page.keyboard.press('Shift+Tab')
+  await expect(arcLink).toBeFocused()
+  await expectFocusRing(arcLink, 'Arc header link')
+
   await page.keyboard.press('Enter')
-  await expect(page).toHaveURL(/\/rialo$/)
+  await expect(page).toHaveURL(/\/arc$/)
 })
 
 test('/ keyboard path reaches primary navigation and an internal project CTA before navigating', async ({ page }) => {
   await page.goto('/')
 
   const primaryNav = page.getByRole('navigation', { name: 'Primary navigation' })
-  const aboutNav = primaryNav.getByRole('link', { name: 'About' })
+  const rialoNav = primaryNav.getByRole('link', { name: 'Rialo' })
   const projectCta = page.getByRole('link', { name: 'Open SIGNAL/LEDGER case file' })
 
   await tabUntilFocused(page, primaryNav.getByRole('link', { name: 'Arc' }), 'Arc primary navigation')
@@ -152,8 +152,8 @@ test('/ keyboard path reaches primary navigation and an internal project CTA bef
   await tabUntilFocused(page, projectCta, 'SIGNAL/LEDGER case CTA')
   await expectFocusRing(projectCta, 'SIGNAL/LEDGER case CTA')
 
-  await tabUntilFocused(page, aboutNav, 'About primary navigation by Shift+Tab', { reverse: true })
-  await expectFocusRing(aboutNav, 'About primary navigation')
+  await tabUntilFocused(page, rialoNav, 'Rialo primary navigation by Shift+Tab', { reverse: true })
+  await expectFocusRing(rialoNav, 'Rialo primary navigation')
 
   await tabUntilFocused(page, projectCta, 'SIGNAL/LEDGER case CTA after reverse path')
   await page.keyboard.press('Enter')

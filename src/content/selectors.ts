@@ -9,7 +9,6 @@ export type PublicRoute =
   | '/arc/arcpredict'
   | '/rialo'
   | '/rialo/rialo-captain'
-  | '/about'
 
 const projectRoutesBySlug = {
   'signal-ledger': '/arc/signal-ledger',
@@ -40,8 +39,6 @@ export function getAllPublicRoutes(): readonly PublicRoute[] {
       routes.push(projectRoutesBySlug[project.slug])
     }
   }
-
-  routes.push('/about')
 
   return routes
 }

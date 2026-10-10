@@ -51,6 +51,11 @@ function ArcProjectMachine({ ecosystem, projects }: ArcInstrumentStageProps) {
     selectorRefs.current[nextIndex]?.focus()
   }
 
+  function commitProject(index: number) {
+    commitTarget(`project:${projects[index].slug}`)
+    setFocusIndex(index)
+  }
+
   function handleKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     switch (event.key) {
       case 'ArrowRight':
@@ -75,8 +80,7 @@ function ArcProjectMachine({ ecosystem, projects }: ArcInstrumentStageProps) {
       case ' ':
       case 'Spacebar':
         event.preventDefault()
-        commitTarget(`project:${projects[index].slug}`)
-        setFocusIndex(index)
+        commitProject(index)
         break
       default:
         break
@@ -100,12 +104,10 @@ function ArcProjectMachine({ ecosystem, projects }: ArcInstrumentStageProps) {
                   data-control-role="stage"
                   data-scene-target={`project:${project.slug}`}
                   key={project.slug}
-                  onClick={() => {
-                    commitTarget(`project:${project.slug}`)
-                    setFocusIndex(index)
-                  }}
+                  onClick={() => commitProject(index)}
                   onFocus={() => setFocusIndex(index)}
                   onKeyDown={(event) => handleKeyDown(event, index)}
+                  onMouseEnter={() => commitProject(index)}
                   ref={(node) => {
                     selectorRefs.current[index] = node
                   }}

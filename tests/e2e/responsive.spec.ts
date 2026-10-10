@@ -30,11 +30,10 @@ const routes = [
     heading: project.name,
     path: `/${project.ecosystem}/${project.slug}`,
   })),
-  { group: 'content', heading: 'About', path: '/about' },
   { group: 'content', heading: 'Project not found', path: '/not-real' },
 ] as const satisfies readonly ResponsiveRoute[]
 
-const expectedRouteCount = 9
+const expectedRouteCount = 8
 const epsilon = 1
 const reflowProxyWidth = 320
 const compactCinematicStageWidths = [320, 390, 560, 700] as const
@@ -89,6 +88,32 @@ test.use({ reducedMotion: 'reduce' } as Parameters<typeof test.use>[0])
 
 test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
+})
+
+test('global Demos entry remains visible and contained on narrow screens', async ({ page }) => {
+  for (const viewportWidth of [320, 390] as const) {
+    await page.setViewportSize({ width: viewportWidth, height: 900 })
+    await page.goto('/')
+
+    const headerDemos = page.getByRole('banner').getByRole('link', {
+      name: /Demos.*opens an external site/i,
+    })
+
+    await expect(headerDemos, `home Header Demos @ ${viewportWidth}px`).toBeVisible()
+    await expect(headerDemos).toHaveAttribute('href', 'https://demos.captain-dock.xyz')
+    await expectDocumentDoesNotOverflow(page, `home Demos @ ${viewportWidth}px`)
+
+    await page.goto('/arc')
+
+    const footerDemos = page
+      .locator('footer.site-footer')
+      .getByRole('navigation', { name: 'Footer navigation' })
+      .getByRole('link', { name: /Demos.*opens an external site/i })
+
+    await expect(footerDemos, `Arc Footer Demos @ ${viewportWidth}px`).toBeVisible()
+    await expect(footerDemos).toHaveAttribute('href', 'https://demos.captain-dock.xyz')
+    await expectDocumentDoesNotOverflow(page, `Arc footer Demos @ ${viewportWidth}px`)
+  }
 })
 
 function routeLabel<TRoute extends Readonly<{ path: string }>>(route: TRoute, viewportWidth: number) {
@@ -467,27 +492,14 @@ async function expectMobileOwnersAreStacked(page: Page, route: ResponsiveRoute, 
     return
   }
 
-  if (route.path === '/about') {
-    await expectVerticalOrder(
-      page,
-      'main#main-content > header > div > *',
-      4,
-      `${label} about hero`,
-    )
-    await expectVerticalOrder(
-      page,
-      'section[aria-labelledby="about-boundaries-heading"] article',
-      3,
-      `${label} about notes`,
-    )
-  }
 }
 
 async function expectMajorTargetsMeetTouchSize(page: Page, route: ResponsiveRoute, label: string) {
   const sharedTargets = [
     { count: 1, selector: '.site-brand' },
-    { count: 4, selector: '.site-nav__link' },
-    { count: 4, selector: '.site-footer a' },
+    { count: 3, selector: '.site-nav__link' },
+    { count: 1, selector: '.site-header__utility .external-link' },
+    ...(route.path === '/' ? [] : [{ count: 6, selector: '.site-footer a' }]),
   ] as const
   const caseProject =
     route.group === 'case-file'
@@ -558,14 +570,7 @@ async function expectMajorTargetsMeetTouchSize(page: Page, route: ResponsiveRout
                   selector: 'main#main-content details > summary',
                 },
               ]
-            : route.path === '/about'
-              ? [
-                  {
-                    count: 2,
-                    selector: 'nav[aria-label="About recovery routes"] a',
-                  },
-                ]
-              : [
+            : [
                   {
                     count: 2,
                     selector: 'nav[aria-label="404 recovery routes"] a',
@@ -675,11 +680,6 @@ async function expectRouteContentVisible(page: Page, route: ResponsiveRoute) {
     await expect(projectNavigation).toHaveCount(1)
     await expect(liveLink).toBeVisible()
     await expect(projectNavigation).toBeVisible()
-  } else if (route.path === '/about') {
-    const returnLink = main.getByRole('link', { name: 'Return to Captain Dock' })
-
-    await expect(returnLink).toHaveCount(1)
-    await expect(returnLink).toBeVisible()
   } else if (route.path === '/not-real') {
     const recoveryRoutes = main.getByRole('navigation', { name: '404 recovery routes' })
 
@@ -1381,7 +1381,7 @@ test('Home and Arc Stage geometry keeps applicable responsive capacity gates', a
   )
 
   for (const viewportWidth of [1440, 1920] as const) {
-    for (const path of ['/about', '/arc/signal-ledger'] as const) {
+    for (const path of ['/rialo/rialo-captain', '/arc/signal-ledger'] as const) {
       await page.setViewportSize({ width: viewportWidth, height: 1200 })
 
       const response = await page.goto(path)

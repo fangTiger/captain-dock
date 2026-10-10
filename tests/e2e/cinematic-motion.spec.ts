@@ -2194,7 +2194,7 @@ async function prewarmHomeOpening(page: Page) {
     'data-cinematic-entry',
     'settled',
   )
-  await page.goto('/about')
+  await page.goto('/arc/signal-ledger')
 }
 
 async function readHomeMobileTerminalState(page: Page, motion: 'normal' | 'reduced') {

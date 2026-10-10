@@ -19,7 +19,6 @@ test.use({ channel: 'chromium' })
 
 const immersiveRoutes = ['/', '/arc', '/rialo'] as const
 const coldRoutes = [
-  { path: '/about', expectedStatus: 200 },
   { path: '/arc/signal-ledger', expectedStatus: 200 },
   { path: '/arc/hadron', expectedStatus: 200 },
   { path: '/arc/arcpredict', expectedStatus: 200 },
@@ -887,7 +886,7 @@ test.describe('production performance gate', () => {
     expect(lighthouseConfig.ci.collect.url).toEqual([
       `${expectedBaseUrl}/`,
       `${expectedBaseUrl}/arc/signal-ledger`,
-      `${expectedBaseUrl}/about`,
+      `${expectedBaseUrl}/rialo/rialo-captain`,
     ])
     expect(lighthouseConfig.ci.collect.numberOfRuns).toBe(3)
     expect(lighthouseConfig.ci.collect.settings).not.toMatchObject({ formFactor: 'desktop' })
